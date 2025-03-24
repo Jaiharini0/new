@@ -41,18 +41,23 @@
             }
         });
 
-        // Play animation after model is fully loaded
         AFRAME.registerComponent('play-animation', {
             init: function () {
                 let el = this.el;
                 el.addEventListener('model-loaded', function () {
-                    console.log("✅ Model loaded, applying animation...");
-                    el.setAttribute('animation-mixer', 'clip: *; loop: repeat;');
+                    console.log("✅ Model loaded, checking animations...");
+                    
+                    let model = el.getObject3D('mesh');
+                    if (model && model.animations.length > 0) {
+                        console.log("🎬 Available Animations:", model.animations.map(anim => anim.name));
+                        el.setAttribute('animation-mixer', 'clip: *; loop: repeat;');
+                    } else {
+                        console.warn("⚠️ No animations found in the model!");
+                    }
                 });
             }
         });
-
-        // Ensure component is only added AFTER model loads
+        
         document.addEventListener("DOMContentLoaded", function () {
             let solarModel = document.querySelector("#solarSystem");
             if (solarModel) {
@@ -61,6 +66,7 @@
                 console.error("❌ Model entity not found.");
             }
         });
+
     </script>
 
 </body>
