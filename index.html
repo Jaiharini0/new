@@ -40,7 +40,18 @@
                 alert("Camera permission denied. Please allow access to use AR.");
             }
         });
+      AFRAME.registerComponent('play-animation', {
+        init: function () {
+          let el = this.el;
+          el.addEventListener('model-loaded', function () {
+            el.setAttribute('animation-mixer', 'clip: *; loop: repeat;');
+          });
+        }
+      });
+    
+      document.querySelector("#solarSystem").setAttribute("play-animation", "");
     </script>
+    
 
 </body>
 </html>
