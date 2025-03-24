@@ -50,7 +50,12 @@
                     let model = el.getObject3D('mesh');
                     if (model && model.animations.length > 0) {
                         console.log("🎬 Available Animations:", model.animations.map(anim => anim.name));
-                        el.setAttribute('animation-mixer', 'clip: *; loop: repeat;');
+                        
+                        // Pick the first animation (or replace with a specific animation name)
+                        let firstAnimation = model.animations[0].name; 
+                        console.log("▶️ Playing animation:", firstAnimation);
+        
+                        el.setAttribute('animation-mixer', `clip: ${firstAnimation}; loop: repeat;`);
                     } else {
                         console.warn("⚠️ No animations found in the model!");
                     }
@@ -58,6 +63,7 @@
             }
         });
         
+        // Apply the component after the DOM is fully loaded
         document.addEventListener("DOMContentLoaded", function () {
             let solarModel = document.querySelector("#solarSystem");
             if (solarModel) {
@@ -66,6 +72,7 @@
                 console.error("❌ Model entity not found.");
             }
         });
+
 
     </script>
 
