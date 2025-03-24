@@ -44,12 +44,13 @@
         init: function () {
           let el = this.el;
           el.addEventListener('model-loaded', function () {
+            console.log("✅ Model loaded, applying animation...");
             el.setAttribute('animation-mixer', 'clip: *; loop: repeat;');
           });
         }
       });
     
-      document.querySelector("#solarSystem").setAttribute("play-animation", "");
+      document.querySelector("#solarModel").setAttribute("play-animation", "");
     </script>
     
 
