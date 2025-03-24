@@ -46,18 +46,31 @@
             init: function () {
                 let el = this.el;
                 el.addEventListener('model-loaded', function () {
-                    let mixer = el.components['animation-mixer'];
+                    console.log("✅ Model loaded, checking animations...");
+                    
+                    // Ensure animation-mixer is properly set
+                    el.setAttribute("animation-mixer", "clip: *; loop: repeat; timeScale: 1");
+        
+                    // Check if animation-mixer exists
+                    let mixer = el.components["animation-mixer"];
                     if (mixer) {
-                        mixer.data.clip = "*"; // Play all animations
-                        mixer.data.loop = "repeat";
-                        mixer.data.timeScale = 1;
-                        console.log("✅ All animations should now be playing.");
+                        console.log("🎞️ Available Animations:", mixer.data.clip);
+                    } else {
+                        console.log("❌ No animation-mixer found. Check GLB export.");
                     }
                 });
             }
         });
         
-        document.querySelector("#solarSystem").setAttribute("play-all-animations", "");
+        // Attach the component to the model AFTER the document is fully loaded
+        window.onload = function () {
+            let entity = document.querySelector("#solarSystem");
+            if (entity) {
+                entity.setAttribute("play-all-animations", "");
+            } else {
+                console.error("❌ Entity #solarSystem not found!");
+            }
+        };
 
 
 
