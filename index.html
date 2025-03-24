@@ -20,7 +20,7 @@
             <a-assets>
                 <a-asset-item id="solarModel" src="post1.glb"></a-asset-item>
             </a-assets>
-            <a-entity id="solarSystem" gltf-model="#solarModel" animation-mixer="clip: *" position="0 0 -35" scale="1 1 1"></a-entity>
+            <a-entity id="solarSystem" gltf-model="#solarModel" position="0 0 -35" scale="1 1 1"></a-entity>
             <a-camera position="0 2 5">
                 <a-cursor></a-cursor>
             </a-camera>
@@ -40,19 +40,28 @@
                 alert("Camera permission denied. Please allow access to use AR.");
             }
         });
-      AFRAME.registerComponent('play-animation', {
-        init: function () {
-          let el = this.el;
-          el.addEventListener('model-loaded', function () {
-            console.log("✅ Model loaded, applying animation...");
-            el.setAttribute('animation-mixer', 'clip: *; loop: repeat;');
-          });
-        }
-      });
-    
-      document.querySelector("#solarSystem").setAttribute("play-animation", "");
+
+        // Play animation after model is fully loaded
+        AFRAME.registerComponent('play-animation', {
+            init: function () {
+                let el = this.el;
+                el.addEventListener('model-loaded', function () {
+                    console.log("✅ Model loaded, applying animation...");
+                    el.setAttribute('animation-mixer', 'clip: *; loop: repeat;');
+                });
+            }
+        });
+
+        // Ensure component is only added AFTER model loads
+        document.addEventListener("DOMContentLoaded", function () {
+            let solarModel = document.querySelector("#solarSystem");
+            if (solarModel) {
+                solarModel.setAttribute("play-animation", "");
+            } else {
+                console.error("❌ Model entity not found.");
+            }
+        });
     </script>
-    
 
 </body>
 </html>
