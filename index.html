@@ -40,8 +40,8 @@
             
             <!-- 🌞 Sun with Glowing Texture -->
             <a-entity id="sun"
-                      geometry="primitive: sphere; radius: 0.5"
-                      material="src: #sunTexture; transparent: true; shader: standard; emissive: yellow; emissiveIntensity: 1"
+                      geometry="primitive: sphere; radius: 1"
+                      material="src: #sunTexture; transparent: true; shader: standard; emissiveIntensity: 1"
                       position="0 1 -3">
             </a-entity>
 
@@ -145,6 +145,7 @@
                 });
             }
         });
+        document.querySelector("#solarSystem").setAttribute("interactive-zoom", "");
 
 
 
