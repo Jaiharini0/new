@@ -174,40 +174,40 @@
         
 
     
-        // // 🎙️ Function to Make Planets Speak
-        // function speak(text) {
-        //     let utterance = new SpeechSynthesisUtterance(text);
-        //     utterance.lang = "en-US";
-        //     utterance.rate = 1;
-        //     speechSynthesis.speak(utterance);
-        // }
+        // 🎙️ Function to Make Planets Speak
+        function speak(text) {
+            let utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = "en-US";
+            utterance.rate = 1;
+            speechSynthesis.speak(utterance);
+        }
     
-        // // 🌍 Define Planet Descriptions
-        // const planetDescriptions = {
-        //     Sun: "I am the Sun, the heart of the Solar System.  I provide light and warmth to all the planets!",
-        //     Mercury: "I am Mercury, the closest planet to the Sun.  I am small but incredibly fast!",
-        //     Venus: "I am Venus, the hottest planet in the solar system, covered with thick clouds!",
-        //     Earth: "Hello! I am Earth, your home planet.  The only planet known to support life.",
-        //     Mars: "I am Mars, also called the Red Planet.  Scientists are searching for signs of life here.",
-        //     Jupiter: "I am Jupiter, the biggest planet in the solar system.  My Great Red Spot is a giant storm!",
-        //     Saturn: "I am Saturn, famous for my beautiful rings made of ice and rock!",
-        //     Uranus: "I am Uranus, I rotate on my side!, and I am a frozen gas giant!",
-        //     Neptune: "I am Neptune, the farthest planet from the Sun.  My winds are the fastest in the Solar System!"
-        // };
+        // 🌍 Define Planet Descriptions
+        const planetDescriptions = {
+            Sun: "I am the Sun, the heart of the Solar System.  I provide light and warmth to all the planets!",
+            Mercury: "I am Mercury, the closest planet to the Sun.  I am small but incredibly fast!",
+            Venus: "I am Venus, the hottest planet in the solar system, covered with thick clouds!",
+            Earth: "Hello! I am Earth, your home planet.  The only planet known to support life.",
+            Mars: "I am Mars, also called the Red Planet.  Scientists are searching for signs of life here.",
+            Jupiter: "I am Jupiter, the biggest planet in the solar system.  My Great Red Spot is a giant storm!",
+            Saturn: "I am Saturn, famous for my beautiful rings made of ice and rock!",
+            Uranus: "I am Uranus, I rotate on my side!, and I am a frozen gas giant!",
+            Neptune: "I am Neptune, the farthest planet from the Sun.  My winds are the fastest in the Solar System!"
+        };
     
-        // // 🔎 Function to Detect Clicked Planet
-        // function getPlanetName(object) {
-        //     while (object) {
-        //         if (planetDescriptions[object.name]) {
-        //             return object.name; // Return matching planet name
-        //         }
-        //         object = object.parent; // Move up hierarchy if needed
-        //     }
-        //     return null;
-        // }
+        // 🔎 Function to Detect Clicked Planet
+        function getPlanetName(object) {
+            while (object) {
+                if (planetDescriptions[object.name]) {
+                    return object.name; // Return matching planet name
+                }
+                object = object.parent; // Move up hierarchy if needed
+            }
+            return null;
+        }
     
-        // // 🚀 Apply Interaction to All Planets Inside the Model
-        // document.querySelector("#solarSystem").setAttribute("planet-interaction", "");
+        // 🚀 Apply Interaction to All Planets Inside the Model
+        document.querySelector("#solarSystem").setAttribute("planet-interaction", "");
 
 
         
@@ -233,40 +233,40 @@
             }
         });
         
-        // 🎙️ Function to make planets speak
-        function speak(text) {
-            let utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = "en-US"; // Set language
-            utterance.rate = 1; // Adjust speed
-            speechSynthesis.speak(utterance);
-        }
+        // // 🎙️ Function to make planets speak
+        // function speak(text) {
+        //     let utterance = new SpeechSynthesisUtterance(text);
+        //     utterance.lang = "en-US"; // Set language
+        //     utterance.rate = 1; // Adjust speed
+        //     speechSynthesis.speak(utterance);
+        // }
         
-        // 🌍 Define planet descriptions
-        const planetDescriptions = {
-            Sun: "I am the Sun, the heart of the Solar System. I provide light and warmth to all the planets!. My gravity keeps the planets in orbit!.I have been shining for over 4.6 billion years! My surface temperature is around 5,500°C",
-            Mercury: "I am Mercury, the closest planet to the Sun. I am small but incredibly fast!",
-            Venus: "I am Venus, the hottest planet in the solar system, covered with thick clouds!.",
-            Earth: "Hello! I am Earth, your home planet. The only planet known to support life.",
-            Mars: "I am Mars, also called the Red Planet. Scientists are searching for signs of life here.",
-            Jupiter: "I am Jupiter, the biggest planet in the solar system. My Great Red Spot is a giant storm!",
-            Saturn: "I am Saturn, famous for my beautiful rings made of ice and rock!.",
-            Uranus: "I am Uranus, I rotate on my side!, and I am a frozen gas giant!",
-            Neptune: "I am Neptune, the farthest planet from the Sun. My winds are the fastest in the Solar System!"
-        };
+        // // 🌍 Define planet descriptions
+        // const planetDescriptions = {
+        //     Sun: "I am the Sun, the heart of the Solar System. I provide light and warmth to all the planets!. My gravity keeps the planets in orbit!.I have been shining for over 4.6 billion years! My surface temperature is around 5,500°C",
+        //     Mercury: "I am Mercury, the closest planet to the Sun. I am small but incredibly fast!",
+        //     Venus: "I am Venus, the hottest planet in the solar system, covered with thick clouds!.",
+        //     Earth: "Hello! I am Earth, your home planet. The only planet known to support life.",
+        //     Mars: "I am Mars, also called the Red Planet. Scientists are searching for signs of life here.",
+        //     Jupiter: "I am Jupiter, the biggest planet in the solar system. My Great Red Spot is a giant storm!",
+        //     Saturn: "I am Saturn, famous for my beautiful rings made of ice and rock!.",
+        //     Uranus: "I am Uranus, I rotate on my side!, and I am a frozen gas giant!",
+        //     Neptune: "I am Neptune, the farthest planet from the Sun. My winds are the fastest in the Solar System!"
+        // };
         
-        // 🔎 Function to get the planet name from the clicked object
-        function getPlanetName(object) {
-            while (object) {
-                if (planetDescriptions[object.name]) {
-                    return object.name; // Return matching planet name
-                }
-                object = object.parent; // Move up hierarchy if needed
-            }
-            return null;
-        }
+        // // 🔎 Function to get the planet name from the clicked object
+        // function getPlanetName(object) {
+        //     while (object) {
+        //         if (planetDescriptions[object.name]) {
+        //             return object.name; // Return matching planet name
+        //         }
+        //         object = object.parent; // Move up hierarchy if needed
+        //     }
+        //     return null;
+        // }
         
-        // 🔥 Attach the component to the solar system model
-        document.querySelector("#solarSystem").setAttribute("planet-speech", "");
+        // // 🔥 Attach the component to the solar system model
+        // document.querySelector("#solarSystem").setAttribute("planet-speech", "");
 
 
     </script>
