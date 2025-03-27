@@ -102,36 +102,82 @@
             }
         });
 
-       // 🪐 Planets Speak on Tap
-      
-        AFRAME.registerComponent("planet-interaction", {
+        //Sun light
+        AFRAME.registerComponent("attach-sun-light", {
             init: function () {
                 let el = this.el;
-                let camera = document.querySelector("[camera]");
-                let originalPosition = camera.getAttribute("position"); // Store default camera position
+                let sunLight = document.createElement("a-entity");
+                
+                // 🌞 Glowing point light
+                sunLight.setAttribute("light", "type: point; color: yellow; intensity: 8; distance: 12; decay: 2");
+                sunLight.setAttribute("position", "0 0 0"); // Attach light to Sun's position
+                
+                el.appendChild(sunLight);
+                console.log("✅ Sun glow effect added!");
+            }
+        });
         
+        // Attach light to the Sun inside the Solar System model
+        document.querySelector("#solarSystem").setAttribute("attach-sun-light", "");
+
+        //planet zoom
+        AFRAME.registerComponent("interactive-zoom", {
+            init: function () {
+                let el = this.el;
+                let originalScale = el.getAttribute("scale");
+                let zoomedScale = { x: originalScale.x * 1.2, y: originalScale.y * 1.2, z: originalScale.z * 1.2 };
+        
+                el.addEventListener("click", function () {
+                    el.setAttribute("animation", {
+                        property: "scale",
+                        to: `${zoomedScale.x} ${zoomedScale.y} ${zoomedScale.z}`,
+                        dur: 300,
+                        easing: "easeOutQuad",
+                        loop: "false"
+                    });
+        
+                    // Relax back to original scale after 500ms
+                    setTimeout(() => {
+                        el.setAttribute("animation", {
+                            property: "scale",
+                            to: `${originalScale.x} ${originalScale.y} ${originalScale.z}`,
+                            dur: 500,
+                            easing: "easeInOutQuad",
+                            loop: "false"
+                        });
+                    }, 500);
+                });
+            }
+        });
+
+
+
+       // 🪐 Planets Speak on Tap
+      
+       AFRAME.registerComponent("planet-speech", {
+            init: function () {
+                let el = this.el;
                 el.addEventListener("model-loaded", function () {
                     let model = el.getObject3D("mesh");
                     if (!model) return;
         
                     el.addEventListener("click", function (event) {
-                        let clickedPlanet = event.detail.intersection.object;
+                        let clickedPlanet = event.detail.intersection.object; // Get clicked object
                         let planetName = getPlanetName(clickedPlanet);
-        
+                        
                         if (planetName) {
                             speak(planetDescriptions[planetName] || "I am a mysterious celestial body.");
-                            zoomTo(clickedPlanet, camera, originalPosition);
                         }
                     });
                 });
             }
         });
         
-        // 🎙️ Make planets speak
+        // 🎙️ Function to make planets speak
         function speak(text) {
             let utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = "en-US";
-            utterance.rate = 1;
+            utterance.lang = "en-US"; // Set language
+            utterance.rate = 1; // Adjust speed
             speechSynthesis.speak(utterance);
         }
         
@@ -148,43 +194,20 @@
             Neptune: "I am Neptune, the farthest planet from the Sun."
         };
         
-        // 🔎 Get planet name from the clicked object
+        // 🔎 Function to get the planet name from the clicked object
         function getPlanetName(object) {
             while (object) {
                 if (planetDescriptions[object.name]) {
-                    return object.name;
+                    return object.name; // Return matching planet name
                 }
-                object = object.parent;
+                object = object.parent; // Move up hierarchy if needed
             }
             return null;
         }
         
-        // 🎥 Zoom in and return back
-        function zoomTo(planet, camera, originalPosition) {
-            let planetPos = planet.getWorldPosition(new THREE.Vector3());
-            let cameraPos = camera.object3D.position;
-        
-            // Calculate direction towards the planet
-            let direction = new THREE.Vector3().subVectors(planetPos, cameraPos).normalize();
-        
-            // Zoom in slightly
-            let zoomedPosition = {
-                x: cameraPos.x + direction.x * 0.5, // Move closer
-                y: cameraPos.y + direction.y * 0.5,
-                z: cameraPos.z + direction.z * 0.5
-            };
-        
-            // Animate zoom in
-            camera.setAttribute("animation", `property: position; to: ${zoomedPosition.x} ${zoomedPosition.y} ${zoomedPosition.z}; dur: 1000; easing: easeInOutQuad`);
-        
-            // Return to original position after 2 seconds
-            setTimeout(() => {
-                camera.setAttribute("animation", `property: position; to: ${originalPosition.x} ${originalPosition.y} ${originalPosition.z}; dur: 1000; easing: easeInOutQuad`);
-            }, 2000);
-        }
-        
-        // 🔥 Attach to solar system
-        document.querySelector("#solarSystem").setAttribute("planet-interaction", "");
+        // 🔥 Attach the component to the solar system model
+        document.querySelector("#solarSystem").setAttribute("planet-speech", "");
+
 
     </script>
 
