@@ -27,7 +27,7 @@
             <a-entity 
                 id="solarSystem"
                 gltf-model="#solarModel"
-                animation-mixer="clip: *; loop: repeat; timeScale: 1"
+                animation-mixer="clip: SunAction.011, VenusAction.011, EarthAction.011, MarsAction.011, SaturnRing.002; loop: repeat; timeScale: 1">
                 position="0 1 -3"
                 scale="0.5 0.5 0.5"
                 gesture-controls>
@@ -66,46 +66,7 @@
             }
         });
 
-        // 🎬 Fix Animations        
-        AFRAME.registerComponent("planet-motion", {
-            schema: {
-                speed: { type: "number", default: 0.001 }, // Revolution speed
-                distance: { type: "number", default: 5 }, // Distance from Sun
-                rotationSpeed: { type: "number", default: 0.01 } // Self-rotation speed
-            },
-        
-            init: function () {
-                this.angle = Math.random() * Math.PI * 2; // Random starting position
-            },
-        
-            tick: function (time, deltaTime) {
-                let el = this.el;
-                let sun = document.querySelector("#sun"); // Get the Sun
-        
-                if (!sun) return;
-        
-                let sunPosition = sun.object3D.position;
-        
-                // 🚀 Planet revolves around the Sun
-                this.angle += this.data.speed * (deltaTime / 16); // Adjust speed based on frame rate
-                let x = sunPosition.x + this.data.distance * Math.cos(this.angle);
-                let z = sunPosition.z + this.data.distance * Math.sin(this.angle);
-                el.object3D.position.set(x, sunPosition.y, z);
-        
-                // 🔄 Planet rotates on its own axis
-                el.object3D.rotation.y += this.data.rotationSpeed;
-            }
-        });
-        
-        // 🌍 Apply the motion component to planets
-        document.querySelectorAll(".planet").forEach((planet, index) => {
-            planet.setAttribute("planet-motion", {
-                speed: 0.0005 + index * 0.0001, // Different speeds for each planet
-                distance: 3 + index * 2, // Different distances from the Sun
-                rotationSpeed: 0.01 + index * 0.005 // Different self-rotation speeds
-            });
-        });
-
+        //tap-to-speak
         AFRAME.registerComponent("planet-speech", {
             init: function () {
                 let el = this.el;
