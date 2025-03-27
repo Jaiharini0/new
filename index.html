@@ -66,21 +66,23 @@
         });
 
         // 🎬 Fix Animations Not Playing
-        AFRAME.registerComponent('play-all-animations', {
+        AFRAME.registerComponent('force-play-animations', {
             init: function () {
-                this.el.addEventListener('model-loaded', function () {
-                    let mixer = this.components['animation-mixer'];
+                let el = this.el;
+                el.addEventListener('model-loaded', function () {
+                    let mixer = el.components['animation-mixer'];
                     if (mixer) {
-                        mixer.data.clip = "*";
-                        mixer.data.loop = "repeat";
-                        mixer.data.timeScale = 1;
-                        console.log("✅ Animations started!");
+                        mixer.play();
+                        console.log("✅ Animations forced to play.");
+                    } else {
+                        console.warn("⚠ Animation-mixer not found!");
                     }
                 });
             }
         });
+    
+        document.querySelector("#solarSystem").setAttribute("force-play-animations", "");
 
-        document.querySelector("#solarSystem").setAttribute("play-all-animations", "");
 
         // 🖐️ Enable Zoom & Rotate Controls
         AFRAME.registerComponent('gesture-controls', {
