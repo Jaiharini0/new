@@ -103,18 +103,20 @@
         });
 
        // 🪐 Planets Speak on Tap
-        document.querySelector("#solarSystem").addEventListener("click", function (event) {
-            let planetName = event.target.id; // Assuming each planet has a unique ID
-            let messages = {
-                sun: "I am the Sun, the center of our solar system.",
-                earth: "Hello! I am Earth, your home planet.",
-                mars: "I am Mars, the red planet.",
-                jupiter: "I am Jupiter, the largest planet in the solar system."
-            };
+        document.querySelector("#solarSystem").addEventListener("click", function () {
+            let message = "This is the Sun, the center of our solar system."; // Default message
         
-            let message = messages[planetName] || "I am a mysterious celestial body.";
+            // 🎙️ Function to make planets speak
+            function speak(text) {
+                let utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = "en-US"; // Adjust language if needed
+                utterance.rate = 1; // Speed of speech
+                speechSynthesis.speak(utterance);
+            }
+        
             speak(message);
         });
+
 
 
 
