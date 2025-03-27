@@ -22,9 +22,6 @@
                 <a-asset-item id="solarModel" src="post.glb"></a-asset-item>
             </a-assets>
 
-            <!-- 🌌 Background with Twinkling Stars -->
-            <a-sky id="starrySky" color="black"></a-sky>
-            <a-entity id="stars"></a-entity>
 
             <!-- 🌍 Solar System Model with Animations & Controls -->
             <a-entity 
@@ -34,14 +31,6 @@
                 position="0 1 -3"
                 scale="0.5 0.5 0.5"
                 gesture-controls>
-            </a-entity>
-
-            <!-- 📌 Floating UI Overlay -->
-            <a-entity id="info-overlay" position="0 3 -5" scale="1 1 1" visible="false">
-                <a-plane width="3" height="1.5" color="white" opacity="0.8">
-                    <a-text id="planet-name" value="Planet Name" position="0 0.5 0" color="black" align="center"></a-text>
-                    <a-text id="planet-details" value="Details here..." position="0 -0.5 0" color="blue" align="center"></a-text>
-                </a-plane>
             </a-entity>
 
             <!-- 🎥 Camera Setup with Zoom & Rotate -->
@@ -113,32 +102,23 @@
             }
         });
 
-        // 🪐 Show Info on Tap
-        document.querySelector("#solarSystem").addEventListener("click", function() {
-            let overlay = document.querySelector("#info-overlay");
-            let planetName = document.querySelector("#planet-name");
-            let planetDetails = document.querySelector("#planet-details");
-
-            planetName.setAttribute("value", "Sun"); // Example: Change dynamically
-            planetDetails.setAttribute("value", "This is the Sun, the center of our solar system.");
-            overlay.setAttribute("visible", "true");
+       // 🪐 Planets Speak on Tap
+        document.querySelector("#solarSystem").addEventListener("click", function () {
+            let message = "This is the Sun, the center of our solar system."; // Default message
+        
+            // 🎙️ Function to make planets speak
+            function speak(text) {
+                let utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = "en-US"; // Adjust language if needed
+                utterance.rate = 1; // Speed of speech
+                speechSynthesis.speak(utterance);
+            }
+        
+            speak(message);
         });
 
-        // 🌟 Add Twinkling Stars Background
-        function createStars() {
-            let stars = document.getElementById("stars");
-            for (let i = 0; i < 200; i++) {
-                let star = document.createElement("a-entity");
-                let x = (Math.random() - 0.5) * 50;
-                let y = (Math.random() - 0.5) * 50;
-                let z = (Math.random() - 0.5) * 50;
-                star.setAttribute("geometry", "primitive: sphere; radius: 0.05");
-                star.setAttribute("material", "color: white; emissive: white; emissiveIntensity: 1");
-                star.setAttribute("position", `${x} ${y} ${z}`);
-                stars.appendChild(star);
-            }
-        }
-        createStars();
+
+    
     </script>
 
 </body>
