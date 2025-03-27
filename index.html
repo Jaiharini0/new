@@ -92,36 +92,38 @@
         });
     
         document.querySelector("#solarSystem").setAttribute("play-all-animations", "");
-        
-        //tap to speak
+
+        //Tap-to-speak
         AFRAME.registerComponent("planet-speech", {
             init: function () {
                 let el = this.el;
+        
                 el.addEventListener("model-loaded", function () {
                     let model = el.getObject3D("mesh");
                     if (!model) return;
         
                     el.addEventListener("click", function (event) {
-                        let clickedPlanet = event.detail.intersection.object; // Get clicked object
+                        let clickedPlanet = event.detail.intersection.object; // Get clicked planet
                         let planetName = getPlanetName(clickedPlanet);
-                        
+        
                         if (planetName) {
-                            speak(planetDescriptions[planetName] || "I am a mysterious celestial body.");
+                            speak(planetDescriptions[planetName]); // Speak the planet description
+                            zoomPlanet(clickedPlanet); // Zoom in the tapped planet
                         }
                     });
                 });
             }
         });
         
-        // 🎙️ Function to make planets speak
+        // 🎙️ Make planets speak
         function speak(text) {
             let utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = "en-US"; // Set language
-            utterance.rate = 1; // Adjust speed
+            utterance.lang = "en-US";
+            utterance.rate = 1;
             speechSynthesis.speak(utterance);
         }
         
-        // 🌍 Define planet descriptions
+        // 🌍 Planet descriptions
         const planetDescriptions = {
             Sun: "I am the Sun, the heart of the Solar System. I provide light and warmth to all the planets!. My gravity keeps the planets in orbit!.I have been shining for over 4.6 billion years! My surface temperature is around 5,500°C",
             Mercury: "I am Mercury, the closest planet to the Sun. I am small but incredibly fast!",
@@ -134,18 +136,36 @@
             Neptune: "I am Neptune, the farthest planet from the Sun. My winds are the fastest in the Solar System!"
         };
         
-        // 🔎 Function to get the planet name from the clicked object
+        // 🔍 Detect planet name from the clicked object
         function getPlanetName(object) {
             while (object) {
                 if (planetDescriptions[object.name]) {
-                    return object.name; // Return matching planet name
+                    return object.name; // Return the planet name
                 }
-                object = object.parent; // Move up hierarchy if needed
+                object = object.parent; // Move up the hierarchy if needed
             }
             return null;
         }
         
-        // 🔥 Attach the component to the solar system model
+        // 🔍 Zoom in on the clicked planet
+        function zoomPlanet(planet) {
+            let originalScale = planet.scale.clone(); // Store original size
+            let zoomFactor = 1.5; // Zoom intensity
+        
+            // Zoom in
+            planet.scale.set(
+                originalScale.x * zoomFactor,
+                originalScale.y * zoomFactor,
+                originalScale.z * zoomFactor
+            );
+        
+            // Reset scale after 2 seconds
+            setTimeout(() => {
+                planet.scale.set(originalScale.x, originalScale.y, originalScale.z);
+            }, 2000);
+        }
+        
+        // 🔥 Attach component to the solar system model
         document.querySelector("#solarSystem").setAttribute("planet-speech", "");
 
     </script>
