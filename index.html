@@ -19,17 +19,17 @@
     <div id="arContainer" style="display: none; width: 100%; height: 100%;">
         <a-scene embedded arjs="sourceType: webcam;">
             <a-assets>
-                <a-asset-item id="solarModel" src="post2.glb"></a-asset-item>
+                <a-asset-item id="solarModel" src="post6.glb"></a-asset-item>
             </a-assets>
             
             <!-- Solar System Model -->
-            <a-entity id="solarSystem" gltf-model="#solarModel" animation-mixer position="0 0 -35" scale="1 1 1"></a-entity>
+            <a-entity id="solarSystem" gltf-model="#solarModel" animation-mixer position="0 0 -35" scale="5 5 5"></a-entity>
             
             <!-- Floating UI Overlay (Cricket-Style) -->
             <a-entity id="info-overlay" position="0 3 -5" scale="1 1 1" visible="false">
                 <a-plane width="3" height="1.5" color="white" opacity="0.8">
-                    <a-text id="planet-name" value="Planet Name" position="-1 0.5 0" color="black" align="left"></a-text>
-                    <a-text id="planet-details" value="Details here..." position="-1 -0.2 0" color="blue" align="left"></a-text>
+                    <a-text id="planet-name" value="Planet Name" position="0 0 -25" color="black" align="left"></a-text>
+                    <a-text id="planet-details" value="Details here..." position="0 0 -25" color="blue" align="left"></a-text>
                 </a-plane>
             </a-entity>
 
