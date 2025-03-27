@@ -154,37 +154,24 @@
             let originalScale = planet.scale.clone(); // Store original scale
             let zoomFactor = 1.5; // Adjust zoom intensity
         
-            let zoomedScale = new THREE.Vector3(
+            // Zoom in
+            planet.scale.set(
                 originalScale.x * zoomFactor,
                 originalScale.y * zoomFactor,
                 originalScale.z * zoomFactor
             );
         
-            // Animate zoom in
-            new TWEEN.Tween(planet.scale)
-                .to(zoomedScale, 500) // Zoom in over 0.5s
-                .easing(TWEEN.Easing.Quadratic.Out)
-                .start();
-        
             // Reset scale after 2 seconds
             setTimeout(() => {
-                new TWEEN.Tween(planet.scale)
-                    .to(originalScale, 500) // Reset to original size
-                    .easing(TWEEN.Easing.Quadratic.Out)
-                    .start();
+                planet.scale.set(originalScale.x, originalScale.y, originalScale.z);
             }, 2000);
         }
         
         // 🔥 Attach to solar system model
         document.querySelector("#solarSystem").setAttribute("planet-interaction", "");
+
         
-        // Start the animation loop for TWEEN
-        AFRAME.registerComponent("tween-animation", {
-            tick: function () {
-                TWEEN.update();
-            }
-        });
-        document.querySelector("a-scene").setAttribute("tween-animation", "");
+        
 
     
         // // 🎙️ Function to Make Planets Speak
