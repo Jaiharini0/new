@@ -97,65 +97,44 @@
 
 
         // 🖐️ Enable Zoom & Rotate Controls
-        AFRAME.registerComponent('gesture-controls', {
-            schema: {
-                enabled: { default: true }
-            },
-            init: function () {
-                this.scaleFactor = 1;
-                this.el.sceneEl.addEventListener('wheel', (e) => {
-                    let scale = this.el.getAttribute("scale");
-                    let delta = e.deltaY > 0 ? -0.1 : 0.1;
-                    this.el.setAttribute("scale", {
-                        x: Math.max(0.1, scale.x + delta),
-                        y: Math.max(0.1, scale.y + delta),
-                        z: Math.max(0.1, scale.z + delta)
-                    });
-                });
-            }
-        });
-
-        
-        //planet zoom
         AFRAME.registerComponent("planet-interaction", {
             schema: {
-                minScale: { type: "vec3", default: { x: 1, y: 1, z: 1 } }, // Default scale
-                maxScale: { type: "vec3", default: { x: 2, y: 2, z: 2 } }  // Zoomed scale
+                minScale: { type: "vec3", default: { x: 1, y: 1, z: 1 } }, // Original scale
+                maxScale: { type: "vec3", default: { x: 1.5, y: 1.5, z: 1.5 } } // Zoomed-in scale
             },
     
             init: function () {
                 let el = this.el;
-                let initialScale = Object.assign({}, this.data.minScale); // Store initial scale
+                let originalScale = Object.assign({}, this.data.minScale);
                 let zoomedScale = this.data.maxScale;
     
-                // 🎤 Tap to Speak Functionality
+                // 🎤 Click to Speak & Zoom
                 el.addEventListener("click", function (event) {
-                    let clickedPlanet = event.detail.intersection.object;
-                    let planetName = getPlanetName(clickedPlanet);
-    
-                    if (planetName) {
-                        speak(planetDescriptions[planetName] || "I am a mysterious celestial body.");
+                    let clickedPlanet = getPlanetName(el);
+                    
+                    if (clickedPlanet) {
+                        speak(planetDescriptions[clickedPlanet] || "I am a mysterious celestial body.");
                     }
     
-                    // 🔍 Zoom In on Tap
+                    // 🔍 Zoom In the Clicked Planet
                     el.setAttribute("scale", zoomedScale);
     
-                    // 🔄 Reset scale after 2 seconds
+                    // 🔄 Reset Scale after 2 seconds
                     setTimeout(() => {
-                        el.setAttribute("scale", initialScale);
+                        el.setAttribute("scale", originalScale);
                     }, 2000);
                 });
     
-                // 📱 Pinch to Zoom Gesture Detection
+                // 📱 Pinch to Zoom Gesture (Individual Planet)
                 let hammer = new Hammer(el.sceneEl.canvas);
                 hammer.get("pinch").set({ enable: true });
     
                 hammer.on("pinch", (event) => {
                     let scaleFactor = event.scale;
                     let newScale = {
-                        x: Math.min(Math.max(initialScale.x * scaleFactor, initialScale.x), zoomedScale.x),
-                        y: Math.min(Math.max(initialScale.y * scaleFactor, initialScale.y), zoomedScale.y),
-                        z: Math.min(Math.max(initialScale.z * scaleFactor, initialScale.z), zoomedScale.z),
+                        x: Math.min(Math.max(originalScale.x * scaleFactor, originalScale.x), zoomedScale.x),
+                        y: Math.min(Math.max(originalScale.y * scaleFactor, originalScale.y), zoomedScale.y),
+                        z: Math.min(Math.max(originalScale.z * scaleFactor, originalScale.z), zoomedScale.z),
                     };
                     el.setAttribute("scale", newScale);
                 });
@@ -172,29 +151,29 @@
     
         // 🌍 Define Planet Descriptions
         const planetDescriptions = {
-            Sun: "I am the Sun, the heart of the Solar System. I provide light and warmth to all the planets! My gravity keeps the planets in orbit!",
-            Mercury: "I am Mercury, the closest planet to the Sun. I am small but incredibly fast!",
+            Sun: "I am the Sun, the heart of the Solar System.  I provide light and warmth to all the planets!",
+            Mercury: "I am Mercury, the closest planet to the Sun.  I am small but incredibly fast!",
             Venus: "I am Venus, the hottest planet in the solar system, covered with thick clouds!",
-            Earth: "Hello! I am Earth, your home planet. The only planet known to support life.",
-            Mars: "I am Mars, also called the Red Planet. Scientists are searching for signs of life here.",
-            Jupiter: "I am Jupiter, the biggest planet in the solar system. My Great Red Spot is a giant storm!",
+            Earth: "Hello! I am Earth, your home planet.  The only planet known to support life.",
+            Mars: "I am Mars, also called the Red Planet.  Scientists are searching for signs of life here.",
+            Jupiter: "I am Jupiter, the biggest planet in the solar system.  My Great Red Spot is a giant storm!",
             Saturn: "I am Saturn, famous for my beautiful rings made of ice and rock!",
             Uranus: "I am Uranus, I rotate on my side!, and I am a frozen gas giant!",
-            Neptune: "I am Neptune, the farthest planet from the Sun. My winds are the fastest in the Solar System!"
+            Neptune: "I am Neptune, the farthest planet from the Sun.  My winds are the fastest in the Solar System!"
         };
     
-        // 🔎 Function to Get Planet Name
+        // 🔎 Function to Detect Clicked Planet
         function getPlanetName(object) {
             while (object) {
                 if (planetDescriptions[object.name]) {
-                    return object.name;
+                    return object.name; // Return matching planet name
                 }
-                object = object.parent;
+                object = object.parent; // Move up hierarchy if needed
             }
             return null;
         }
     
-        // 🚀 Apply Interaction to Planets
+        // 🚀 Apply Interaction to All Planets Inside the Model
         document.querySelector("#solarSystem").setAttribute("planet-interaction", "");
 
 
