@@ -120,35 +120,35 @@
         // Attach light to the Sun inside the Solar System model
         document.querySelector("#solarSystem").setAttribute("attach-sun-light", "");
 
-        //planet zoom
-        AFRAME.registerComponent("interactive-zoom", {
-            init: function () {
-                let el = this.el;
-                let originalScale = el.getAttribute("scale");
-                let zoomedScale = { x: originalScale.x * 1.2, y: originalScale.y * 1.2, z: originalScale.z * 1.2 };
+        // //planet zoom
+        // AFRAME.registerComponent("interactive-zoom", {
+        //     init: function () {
+        //         let el = this.el;
+        //         let originalScale = el.getAttribute("scale");
+        //         let zoomedScale = { x: originalScale.x * 1.2, y: originalScale.y * 1.2, z: originalScale.z * 1.2 };
         
-                el.addEventListener("click", function () {
-                    el.setAttribute("animation", {
-                        property: "scale",
-                        to: `${zoomedScale.x} ${zoomedScale.y} ${zoomedScale.z}`,
-                        dur: 300,
-                        easing: "easeOutQuad",
-                        loop: "false"
-                    });
+        //         el.addEventListener("click", function () {
+        //             el.setAttribute("animation", {
+        //                 property: "scale",
+        //                 to: `${zoomedScale.x} ${zoomedScale.y} ${zoomedScale.z}`,
+        //                 dur: 300,
+        //                 easing: "easeOutQuad",
+        //                 loop: "false"
+        //             });
         
-                    // Relax back to original scale after 500ms
-                    setTimeout(() => {
-                        el.setAttribute("animation", {
-                            property: "scale",
-                            to: `${originalScale.x} ${originalScale.y} ${originalScale.z}`,
-                            dur: 500,
-                            easing: "easeInOutQuad",
-                            loop: "false"
-                        });
-                    }, 500);
-                });
-            }
-        });
+        //             // Relax back to original scale after 500ms
+        //             setTimeout(() => {
+        //                 el.setAttribute("animation", {
+        //                     property: "scale",
+        //                     to: `${originalScale.x} ${originalScale.y} ${originalScale.z}`,
+        //                     dur: 500,
+        //                     easing: "easeInOutQuad",
+        //                     loop: "false"
+        //                 });
+        //             }, 500);
+        //         });
+        //     }
+        // });
 
 
 
