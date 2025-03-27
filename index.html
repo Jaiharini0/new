@@ -66,22 +66,26 @@
         });
 
         // 🎬 Fix Animations Not Playing
-        AFRAME.registerComponent('force-play-animations', {
+        AFRAME.registerComponent("play-all-animations", {
             init: function () {
                 let el = this.el;
-                el.addEventListener('model-loaded', function () {
-                    let mixer = el.components['animation-mixer'];
-                    if (mixer) {
-                        mixer.play();
-                        console.log("✅ Animations forced to play.");
-                    } else {
-                        console.warn("⚠ Animation-mixer not found!");
-                    }
+                el.addEventListener("model-loaded", function () {
+                    let model = el.getObject3D("mesh");
+                    if (!model) return;
+
+                    let mixer = new THREE.AnimationMixer(model);
+                    model.animations.forEach((clip) => {
+                        let action = mixer.clipAction(clip);
+                        action.play();
+                    });
+
+                    el.setObject3D("mixer", mixer);
+                    console.log("✅ Animations started!");
                 });
             }
         });
-    
-        document.querySelector("#solarSystem").setAttribute("force-play-animations", "");
+
+        document.querySelector("#solarSystem").setAttribute("play-all-animations", "");
 
 
         // 🖐️ Enable Zoom & Rotate Controls
