@@ -31,7 +31,7 @@
             <!-- Galaxy Intro -->
             <a-entity id="galaxyIntro"
                       gltf-model="#galaxyModel"
-                      position="0 2 -10"
+                      position="0 2 -30"
                       scale="5 5 5"
                       visible="false"
                       animation="property: rotation; to: 0 360 0; loop: true; dur: 8000">
@@ -40,10 +40,10 @@
             <!-- Black Hole (hidden initially) -->
             <a-entity id="blackHole"
                       gltf-model="#blackHoleModel"
-                      position="0 2 -10"
+                      position="0 2 -30"
                       scale="5 5 5"
                       visible="false"
-                      animation="property: scale; to: 0 0 0; dur: 0; autoplay: false">
+                      animation="property: scale; to: 0 0 0; dur: 0; autoplay: true">
             </a-entity>
 
             <!-- Solar System (hidden initially) -->
@@ -182,7 +182,7 @@
                         blackHole.setAttribute("visible", "true");
                         blackHole.setAttribute("animation", {
                             property: "scale",
-                            to: "5 2 5",
+                            to: "10 5 10",
                             dur: 5000,
                             easing: "easeInOutQuad",
                             autoplay: true
@@ -194,8 +194,8 @@
                             // Zoom in camera to solar system
                             camera.setAttribute("animation", {
                                 property: "position",
-                                to: "0 2 10",
-                                dur: 8000,
+                                to: "0 2 5",
+                                dur: 5000,
                                 easing: "easeInOutQuad"
                             });
 
