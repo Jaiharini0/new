@@ -24,7 +24,6 @@
                 <!-- Add the asteroid image -->
                 <a-asset-item id="solarModel" src="post.glb"></a-asset-item>
                 <a-asset-item id="galaxyModel" src="galaxy.glb"></a-asset-item>
-                <a-asset-item id="blackHoleModel" src="blackhole.glb"></a-asset-item>
                 <img id="sunTexture" src="sun2.jpg">
             </a-assets>
 
@@ -35,15 +34,6 @@
                       scale="5 5 5"
                       visible="false"
                       animation="property: rotation; to: 0 360 0; loop: true; dur: 8000">
-            </a-entity>
-
-            <!-- Black Hole (hidden initially) -->
-            <a-entity id="blackHole"
-                      gltf-model="#blackHoleModel"
-                      position="0 2 -30"
-                      scale="5 5 5"
-                      visible="false"
-                      animation="property: scale; to: 0 0 0; dur: 0; autoplay: true">
             </a-entity>
 
             <!-- Solar System (hidden initially) -->
@@ -64,7 +54,7 @@
                       visible="false">
             </a-entity>
             <!-- Camera -->
-            <a-camera id="mainCamera" position="1 5 5" rotation="-30 -45 0" look-controls>
+            <a-camera id="mainCamera" position="5 10 15" rotation="-30 -45 0" look-controls>
                 <a-cursor></a-cursor>
             </a-camera>
         </a-scene>
@@ -166,7 +156,6 @@
                     document.getElementById('arContainer').style.display = 'block';
 
                     const galaxy = document.querySelector("#galaxyIntro");
-                    const blackHole = document.querySelector("#blackHole");
                     const solar = document.querySelector("#solarSystem");
                     const sun = document.querySelector("#sun");
                     const camera = document.querySelector("#mainCamera");
@@ -177,20 +166,10 @@
 
                     // Narration
                     introSpeak("Welcome, You are entering the Chronicles of the Celestial Classroom. Before you stands the vast spiral galaxy, home to countless wonders. Now… let us journey to a very special corner of this galaxy — our own Solar System.", () => {
-                        // Show Black Hole
-                        galaxy.setAttribute("visible", "false");
-                        blackHole.setAttribute("visible", "true");
-                        blackHole.setAttribute("animation", {
-                            property: "scale",
-                            to: "10 5 10",
-                            dur: 5000,
-                            easing: "easeInOutQuad",
-                            autoplay: true
-                        });
+                        
 
-                        // Hide galaxy after black hole animation
+                        // Hide galaxy
                         setTimeout(() => {
-                            
                             // Zoom in camera to solar system
                             camera.setAttribute("animation", {
                                 property: "position",
@@ -199,8 +178,8 @@
                                 easing: "easeInOutQuad"
                             });
 
-                            // Hide black hole and show solar system & sun
-                            blackHole.setAttribute("visible", "false");
+                            //show solar system & sun
+                            galaxy.setAttribute("visible", "false");
                             solar.setAttribute("visible", "true");
                             sun.setAttribute("visible", "true");
                             speak("I am the Sun, the heart of the Solar System. I provide light and warmth to all the planets. My gravity keeps them in orbit. I've been shining for over 4.6 billion years!");
