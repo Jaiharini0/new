@@ -22,7 +22,6 @@
             <!-- Assets -->
             <a-assets>
                 <!-- Add the asteroid image -->
-                <img id="asteroidTexture" src="asteroid.jpg">
                 <a-asset-item id="solarModel" src="post.glb"></a-asset-item>
                 <a-asset-item id="galaxyModel" src="galaxy.glb"></a-asset-item>
                 <a-asset-item id="blackHoleModel" src="blackhole.glb"></a-asset-item>
@@ -64,18 +63,8 @@
                       position="0 2 -30"
                       visible="false">
             </a-entity>
-
-            <!-- Asteroid Entity -->
-            <a-entity id="asteroid"
-                      geometry="primitive: plane; width: 2; height: 2"
-                      material="src: #asteroidTexture; emissive: true; emissiveIntensity: 1"
-                      position="-5 5 -10"
-                      rotation="0 45 0"
-                      animation="property: position; to: 5 -5 -10; dur: 5000; easing: easeInOutQuad; loop: false">
-            </a-entity>
-
             <!-- Camera -->
-            <a-camera id="mainCamera" position="1 5 15" rotation="-30 -45 0" look-controls>
+            <a-camera id="mainCamera" position="1 5 5" rotation="-30 -45 0" look-controls>
                 <a-cursor></a-cursor>
             </a-camera>
         </a-scene>
@@ -182,9 +171,6 @@
                     const sun = document.querySelector("#sun");
                     const camera = document.querySelector("#mainCamera");
 
-                    // Show Asteroid (Flash first)
-                    const asteroid = document.querySelector("#asteroid");
-
                     // Show Galaxy
                     galaxy.setAttribute("visible", "true");
                     
@@ -196,7 +182,7 @@
                         blackHole.setAttribute("visible", "true");
                         blackHole.setAttribute("animation", {
                             property: "scale",
-                            to: "1 5 5",
+                            to: "5 2 5",
                             dur: 5000,
                             easing: "easeInOutQuad",
                             autoplay: true
@@ -208,7 +194,7 @@
                             // Zoom in camera to solar system
                             camera.setAttribute("animation", {
                                 property: "position",
-                                to: "0 2 20",
+                                to: "0 2 10",
                                 dur: 8000,
                                 easing: "easeInOutQuad"
                             });
