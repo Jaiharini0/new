@@ -64,14 +64,6 @@
                 if (stream) {
                     document.getElementById('startAR').style.display = 'none';
                     document.getElementById('arContainer').style.display = 'block';
-                  // 🚀 Start galaxy intro after 2s
-                    setTimeout(() => {
-                      speak("From the heart of the galaxy, the Celestial Classroom awakens...");
-                      setTimeout(() => {
-                        document.querySelector("#solarSystem").emit("fadeInSolar");
-                        document.querySelector("#sun").emit("fadeInSolar");
-                      }, 4000);
-                    }, 2000);
                 }
             } catch (err) {
                 alert("Camera permission denied. Please allow access to use AR.");
