@@ -10,7 +10,6 @@
     <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.min.js"></script>
     <script src="https://unpkg.com/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
 </head>
 <body style="margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh;">
 
@@ -58,10 +57,16 @@
 
     <script>
         // 📌 Start AR on Button Click
-         document.getElementById('startAR').addEventListener('click', function () {
-            console.log("Start AR button clicked");
-            document.getElementById('startAR').style.display = 'none';
-            document.getElementById('arContainer').style.display = 'block';
+        document.getElementById('startAR').addEventListener('click', async function() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                if (stream) {
+                    document.getElementById('startAR').style.display = 'none';
+                    document.getElementById('arContainer').style.display = 'block';
+                }
+            } catch (err) {
+                alert("Camera permission denied. Please allow access to use AR.");
+            }
         });
 
         //tap-to-speak
