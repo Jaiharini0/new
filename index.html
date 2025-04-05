@@ -54,7 +54,7 @@
                       visible="false">
             </a-entity>
             <!-- Camera -->
-            <a-camera id="mainCamera" position="0 10 50" rotation="-30 0 0" look-controls>
+            <a-camera id="mainCamera" position="1 5 5" rotation="-30 -45 0" look-controls>
                 <a-cursor></a-cursor>
             </a-camera>
         </a-scene>
@@ -168,15 +168,15 @@
                     introSpeak("Welcome, You are entering the Chronicles of the Celestial Classroom. Before you stands the vast spiral galaxy, home to countless wonders. Now… let us journey to a very special corner of this galaxy — our own Solar System.", () => {
                         
 
-                        // Hide galaxy
-                        setTimeout(() => {
-                            // Zoom in camera to solar system
-                            camera.setAttribute("animation", {
-                                property: "position",
-                                to: "0 2 5",
-                                dur: 5000,
-                                easing: "easeInOutQuad"
-                            });
+                        // // Hide galaxy
+                        // setTimeout(() => {
+                        //     // Zoom in camera to solar system
+                        //     camera.setAttribute("animation", {
+                        //         property: "position",
+                        //         to: "0 2 5",
+                        //         dur: 5000,
+                        //         easing: "easeInOutQuad"
+                        //     });
 
                             //show solar system & sun
                             galaxy.setAttribute("visible", "false");
