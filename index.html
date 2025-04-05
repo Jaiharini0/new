@@ -161,6 +161,27 @@
                 });
             }
         });
+        // Function to create a label and display it above the planet
+        function createLabel(planetName, planet) {
+            // Create the label entity
+            let label = document.createElement("a-entity");
+        
+            // Set the label text, position, and scale
+            label.setAttribute("text", {
+                value: planetName,
+                align: "center",
+                width: 3
+            });
+            label.setAttribute("position", {
+                x: planet.position.x,
+                y: planet.position.y + 2,  // Position label above the planet
+                z: planet.position.z
+            });
+            label.setAttribute("scale", "2 2 2");
+        
+            // Add the label to the scene
+            document.querySelector("a-scene").appendChild(label);
+        }
         
         // 🎙️ Function to make planets speak
         function speak(text) {
