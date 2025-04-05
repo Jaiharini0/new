@@ -30,7 +30,7 @@
             <a-entity id="galaxyIntro"
                       gltf-model="#galaxyModel"
                       position="0 2 -10"
-                      scale="3 3 3"
+                      scale="10 10 10"
                       visible="false"
                       animation="property: rotation; to: 0 360 0; loop: true; dur: 8000">
             </a-entity>
@@ -164,7 +164,7 @@
                     galaxy.setAttribute("visible", "true");
 
                     // Narration
-                    introSpeak("Welcome, traveler of the stars… You are entering the Chronicles of the Celestial Classroom.Before you stands the vast spiral galaxy, home to countless wonders.Now… let us journey to a very special corner of this galaxy — our own Solar System.Observe as the galaxy fades, and behold the planets assembling around their radiant teacher, the Sun.I am the Sun, the heart of the Solar System. I provide light and warmth to all the planets!. My gravity keeps the planets in orbit!. I have been shining for over 4.6 billion years! My surface temperature is around 5,500°C. Each planet has a voice, a story, and a lesson to share. Tap on them to listen and explore!", () => {
+                    introSpeak("Welcome, traveler of the stars… You are entering the Chronicles of the Celestial Classroom. Before you stands the vast spiral galaxy, home to countless wonders. Now… let us journey to a very special corner of this galaxy — our own Solar System.  Observe as the galaxy fades, and behold the planets assembling around their radiant teacher, the Sun. Each planet has a voice, a story, and a lesson to share. Tap on them to listen and explore!", () => {
                         // Hide galaxy
                         galaxy.setAttribute("visible", "false");
 
@@ -179,6 +179,7 @@
                         // Show solar system & sun
                         solar.setAttribute("visible", "true");
                         sun.setAttribute("visible", "true");
+                        speak("I am the Sun, the heart of the Solar System. I provide light and warmth to all the planets. My gravity keeps them in orbit. I've been shining for over 4.6 billion years!");
                     });
                 }
             } catch (err) {
