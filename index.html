@@ -185,17 +185,9 @@
                     // Show Asteroid (Flash first)
                     const asteroid = document.querySelector("#asteroid");
 
-                    // Flash asteroid
-                    asteroid.setAttribute('animation', {
-                        property: 'material.emissiveIntensity',
-                        to: '0',
-                        dur: 500,
-                        easing: 'easeInOutQuad',
-                        loop: 'true'
-                    });
-
                     // Show Galaxy
                     galaxy.setAttribute("visible", "true");
+                    
 
                     // Narration
                     introSpeak("Welcome, traveler of the stars… You are entering the Chronicles of the Celestial Classroom. Before you stands the vast spiral galaxy, home to countless wonders. Now… let us journey to a very special corner of this galaxy — our own Solar System.", () => {
@@ -212,7 +204,6 @@
                         // Hide galaxy after black hole animation
                         setTimeout(() => {
                             galaxy.setAttribute("visible", "false");
-
                             // Zoom in camera to solar system
                             camera.setAttribute("animation", {
                                 property: "position",
