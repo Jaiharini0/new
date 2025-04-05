@@ -81,14 +81,15 @@
 
     // ☄️ Asteroid click triggers intro + fade-in
     const asteroid = document.querySelector("#asteroid");
-    asteroid.addEventListener("click", () => {
+    setTimeout(() => {
       asteroid.emit("fly");
       setTimeout(() => {
         document.querySelector("#solarSystem").emit("fadeInSolar");
         document.querySelector("#sun").emit("fadeInSolar");
         speak("A spark from the void awakens the Celestial Classroom...");
       }, 3000);
-    });
+    }, 2000); // starts 2 seconds after scene loads
+
 
     // 🎙️ Narration
     function speak(text) {
