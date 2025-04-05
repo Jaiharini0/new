@@ -3,14 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <title>WebAR Solar System</title>
 
   <!-- A-Frame & AR.js -->
   <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.min.js"></script>
   <script src="https://unpkg.com/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
   <script src="https://unpkg.com/aframe-particle-system-component@1.0.9/dist/aframe-particle-system-component.min.js"></script>
 </head>
 
@@ -21,21 +19,26 @@
     <a-scene embedded arjs="sourceType: webcam;">
       <a-assets>
         <a-asset-item id="solarModel" src="post.glb"></a-asset-item>
+        <a-asset-item id="galaxyModel" src="galaxy.glb"></a-asset-item>
         <img id="sunTexture" src="sun2.jpg" />
       </a-assets>
 
-      <!-- 🌌 Sky -->
+      <!-- 🌌 Space Sky -->
       <a-sky color="#000000"></a-sky>
 
-      <!-- ☄️ Asteroid -->
-      <a-entity id="asteroid"
-        geometry="primitive: sphere; radius: 0.5"
-        material="color: #ff7700; emissive: #ff2200; emissiveIntensity: 2; shader: standard"
-        position="-3 2 -5"
-        particle-system="preset: dust; particleCount: 500; color: #ffaa00, #ff5500; size: 0.2; opacity: 0.7"
-        animation__fly="property: position; to: 3 3 -30; dur: 3000; easing: easeInOutSine; startEvents: fly"
-        animation__fadeout="property: material.opacity; to: 0; dur: 1000; startEvents: fly"
-        animation__rotate="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true">
+      <!-- 🌌 Galaxy Intro -->
+      <a-entity id="galaxyIntro"
+        gltf-model="#galaxyModel"
+        position="0 2 -10"
+        scale="1 1 1"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 12000"
+        visible="true">
+      </a-entity>
+
+      <!-- ✨ Particle Swirl -->
+      <a-entity id="galaxyParticles"
+        position="0 2 -10"
+        particle-system="preset: dust; particleCount: 800; size: 0.3; color: #ffffff, #88ccff; opacity: 0.6">
       </a-entity>
 
       <!-- 🌞 Sun -->
@@ -66,32 +69,29 @@
   </div>
 
   <script>
-    // 📌 Start AR on Button Click
+    // 🎬 Start AR Button
     document.getElementById('startAR').addEventListener('click', async function () {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         if (stream) {
           document.getElementById('startAR').style.display = 'none';
           document.getElementById('arContainer').style.display = 'block';
+
+          // 🚀 Start galaxy intro after 2s
+          setTimeout(() => {
+            speak("From the heart of the galaxy, the Celestial Classroom awakens...");
+            setTimeout(() => {
+              document.querySelector("#solarSystem").emit("fadeInSolar");
+              document.querySelector("#sun").emit("fadeInSolar");
+            }, 4000);
+          }, 2000);
         }
       } catch (err) {
         alert("Camera permission denied. Please allow access to use AR.");
       }
     });
 
-    // ☄️ Asteroid click triggers intro + fade-in
-    const asteroid = document.querySelector("#asteroid");
-    setTimeout(() => {
-      asteroid.emit("fly");
-      setTimeout(() => {
-        document.querySelector("#solarSystem").emit("fadeInSolar");
-        document.querySelector("#sun").emit("fadeInSolar");
-        speak("A spark from the void awakens the Celestial Classroom...");
-      }, 3000);
-    }, 2000); // starts 2 seconds after scene loads
-
-
-    // 🎙️ Narration
+    // 🎙️ Text-to-Speech
     function speak(text) {
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = "en-US";
@@ -112,31 +112,6 @@
             let planetName = getPlanetName(clickedPlanet);
             if (planetName) {
               speak(planetDescriptions[planetName] || "I am a mysterious celestial body.");
-
-              const planetGroup = clickedPlanet.parent;
-              const originalScale = planetGroup.scale.clone();
-
-              const tempEntity = document.createElement("a-entity");
-              tempEntity.setAttribute("scale", originalScale);
-              planetGroup.add(tempEntity.object3D);
-
-              tempEntity.setAttribute("animation__zoom", {
-                property: "scale",
-                to: `${originalScale.x * 1.3} ${originalScale.y * 1.3} ${originalScale.z * 1.3}`,
-                dur: 200,
-                easing: "easeOutQuad",
-                autoplay: true
-              });
-
-              setTimeout(() => {
-                tempEntity.setAttribute("animation__zoomOut", {
-                  property: "scale",
-                  to: `${originalScale.x} ${originalScale.y} ${originalScale.z}`,
-                  dur: 200,
-                  easing: "easeInQuad",
-                  autoplay: true
-                });
-              }, 300);
             }
           });
         });
