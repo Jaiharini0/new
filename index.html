@@ -23,6 +23,7 @@
             <a-assets>
                 <a-asset-item id="solarModel" src="post.glb"></a-asset-item>
                 <a-asset-item id="galaxyModel" src="galaxy.glb"></a-asset-item>
+                <a-asset-item id="blackHoleModel" src="blackhole.glb"></a-asset-item> <!-- Black Hole Model -->
                 <img id="sunTexture" src="sun2.jpg">
             </a-assets>
 
@@ -33,6 +34,15 @@
                       scale="5 5 5"
                       visible="false"
                       animation="property: rotation; to: 0 360 0; loop: true; dur: 8000">
+            </a-entity>
+
+            <!-- Black Hole (hidden initially) -->
+            <a-entity id="blackHole"
+                      gltf-model="#blackHoleModel"
+                      position="0 2 -10"
+                      scale="5 5 5"
+                      visible="false"
+                      animation="property: scale; to: 0 0 0; dur: 0; autoplay: false">
             </a-entity>
 
             <!-- Solar System (hidden initially) -->
@@ -70,83 +80,6 @@
             speechSynthesis.speak(utterance);
         }
 
-        // Get planet name from clicked object
-        function getPlanetName(object) {
-            while (object) {
-                if (planetDescriptions[object.name]) {
-                    return object.name;
-                }
-                object = object.parent;
-            }
-            return null;
-        }
-
-        // Make planet speak on tap
-        AFRAME.registerComponent("planet-speech", {
-            init: function () {
-                let el = this.el;
-                el.addEventListener("model-loaded", function () {
-                    let model = el.getObject3D("mesh");
-                    if (!model) return;
-
-                    el.addEventListener("click", function (event) {
-                        let clickedPlanet = event.detail.intersection.object;
-                        let planetName = getPlanetName(clickedPlanet);
-
-                        if (planetName) {
-                            speak(planetDescriptions[planetName] || "I am a mysterious celestial body.");
-
-                            // Animate Zoom
-                            const planetGroup = clickedPlanet.parent;
-                            const originalScale = planetGroup.scale.clone();
-                            const tempEntity = document.createElement("a-entity");
-                            tempEntity.setAttribute("scale", originalScale);
-                            planetGroup.add(tempEntity.object3D);
-
-                            tempEntity.setAttribute("animation__zoom", {
-                                property: "scale",
-                                to: `${originalScale.x * 1.3} ${originalScale.y * 1.3} ${originalScale.z * 1.3}`,
-                                dur: 200,
-                                easing: "easeOutQuad",
-                                autoplay: true
-                            });
-
-                            setTimeout(() => {
-                                tempEntity.setAttribute("animation__zoomOut", {
-                                    property: "scale",
-                                    to: `${originalScale.x} ${originalScale.y} ${originalScale.z}`,
-                                    dur: 200,
-                                    easing: "easeInQuad",
-                                    autoplay: true
-                                });
-                            }, 300);
-                        }
-                    });
-                });
-            }
-        });
-
-        // Speak helper
-        function speak(text) {
-            let utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = "en-US";
-            utterance.rate = 1;
-            speechSynthesis.speak(utterance);
-        }
-
-        // Planet descriptions
-        const planetDescriptions = {
-            Sun: "I am the Sun, the heart of the Solar System. I provide light and warmth to all the planets!. My gravity keeps the planets in orbit!. I have been shining for over 4.6 billion years! My surface temperature is around 5,500°C",
-            Mercury: "I am Mercury, the closest planet to the Sun. I am small but incredibly fast!",
-            Venus: "I am Venus, the hottest planet in the solar system, covered with thick clouds!.",
-            Earth: "Hello! I am Earth, your home planet. The only planet known to support life.",
-            Mars: "I am Mars, also called the Red Planet. Scientists are searching for signs of life here.",
-            Jupiter: "I am Jupiter, the biggest planet in the solar system. My Great Red Spot is a giant storm!",
-            Saturn: "I am Saturn, famous for my beautiful rings made of ice and rock!.",
-            Uranus: "I am Uranus, I rotate on my side!, and I am a frozen gas giant!",
-            Neptune: "I am Neptune, the farthest planet from the Sun. My winds are the fastest in the Solar System!"
-        };
-
         // AR Start Flow
         document.getElementById('startAR').addEventListener('click', async function () {
             try {
@@ -156,6 +89,7 @@
                     document.getElementById('arContainer').style.display = 'block';
 
                     const galaxy = document.querySelector("#galaxyIntro");
+                    const blackHole = document.querySelector("#blackHole");
                     const solar = document.querySelector("#solarSystem");
                     const sun = document.querySelector("#sun");
                     const camera = document.querySelector("#mainCamera");
@@ -164,32 +98,41 @@
                     galaxy.setAttribute("visible", "true");
 
                     // Narration
-                    introSpeak("Welcome, traveler of the stars… You are entering the Chronicles of the Celestial Classroom. Before you stands the vast spiral galaxy, home to countless wonders. Now… let us journey to a very special corner of this galaxy — our own Solar System.  Observe as the galaxy fades, and behold the planets assembling around their radiant teacher, the Sun. Each planet has a voice, a story, and a lesson to share. Tap on them to listen and explore!", () => {
-                        // Hide galaxy
-                        galaxy.setAttribute("visible", "false");
-
-                        // Zoom in camera to solar system
-                        camera.setAttribute("animation", {
-                            property: "position",
-                            to: "0 2 10",
-                            dur: 8000,
-                            easing: "easeInOutQuad"
+                    introSpeak("Welcome, traveler of the stars… You are entering the Chronicles of the Celestial Classroom. Before you stands the vast spiral galaxy, home to countless wonders. Now… let us journey to a very special corner of this galaxy — our own Solar System. First, observe the cosmic force that is a black hole, and then behold the galaxy fade, giving way to the solar system!", () => {
+                        // Show Black Hole
+                        blackHole.setAttribute("visible", "true");
+                        blackHole.setAttribute("animation", {
+                            property: "scale",
+                            to: "5 5 5",
+                            dur: 5000,
+                            easing: "easeInOutQuad",
+                            autoplay: true
                         });
 
-                        // Show solar system & sun
-                        solar.setAttribute("visible", "true");
-                        sun.setAttribute("visible", "true");
-                        speak("I am the Sun, the heart of the Solar System. I provide light and warmth to all the planets. My gravity keeps them in orbit. I've been shining for over 4.6 billion years!");
+                        // Hide galaxy after black hole animation
+                        setTimeout(() => {
+                            galaxy.setAttribute("visible", "false");
+
+                            // Zoom in camera to solar system
+                            camera.setAttribute("animation", {
+                                property: "position",
+                                to: "0 2 10",
+                                dur: 8000,
+                                easing: "easeInOutQuad"
+                            });
+
+                            // Hide black hole and show solar system & sun
+                            blackHole.setAttribute("visible", "false");
+                            solar.setAttribute("visible", "true");
+                            sun.setAttribute("visible", "true");
+
+                            speak("I am the Sun, the heart of the Solar System. I provide light and warmth to all the planets. My gravity keeps them in orbit. I've been shining for over 4.6 billion years!");
+                        }, 5000); // After 5 seconds, fade out black hole and start solar system transition
                     });
                 }
             } catch (err) {
                 alert("Camera permission denied. Please allow access to use AR.");
             }
-        });
-
-        // Attach speech to solar system
-        document.addEventListener("DOMContentLoaded", () => {
-            document.querySelector("#solarSystem").setAttribute("planet-speech", "");
         });
     </script>
 </body>
