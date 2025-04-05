@@ -190,12 +190,13 @@
                     
 
                     // Narration
-                    introSpeak("Welcome, traveler of the stars… You are entering the Chronicles of the Celestial Classroom. Before you stands the vast spiral galaxy, home to countless wonders. Now… let us journey to a very special corner of this galaxy — our own Solar System.", () => {
+                    introSpeak("Welcome, You are entering the Chronicles of the Celestial Classroom. Before you stands the vast spiral galaxy, home to countless wonders. Now… let us journey to a very special corner of this galaxy — our own Solar System.", () => {
                         // Show Black Hole
+                        galaxy.setAttribute("visible", "false");
                         blackHole.setAttribute("visible", "true");
                         blackHole.setAttribute("animation", {
                             property: "scale",
-                            to: "5 5 5",
+                            to: "1 5 5",
                             dur: 5000,
                             easing: "easeInOutQuad",
                             autoplay: true
@@ -203,11 +204,11 @@
 
                         // Hide galaxy after black hole animation
                         setTimeout(() => {
-                            galaxy.setAttribute("visible", "false");
+                            
                             // Zoom in camera to solar system
                             camera.setAttribute("animation", {
                                 property: "position",
-                                to: "0 2 10",
+                                to: "0 2 20",
                                 dur: 8000,
                                 easing: "easeInOutQuad"
                             });
