@@ -19,7 +19,7 @@
     </button>
 
     <div id="arContainer" style="display: none; width: 100%; height: 100%;">
-        <a-scene tween-tick embedded arjs="sourceType: webcam;">
+        <a-scene embedded arjs="sourceType: webcam;">
             <a-assets>
                 <a-asset-item id="solarModel" src="post.glb"></a-asset-item>
             </a-assets>
@@ -84,9 +84,34 @@
                         
                         if (planetName) {
                             speak(planetDescriptions[planetName] || "I am a mysterious celestial body.");
-                            const target = clicked.parent;
-                            animateZoom(target);
-                        }
+                            // 🌀 Animate the clicked mesh's parent
+                            const planetGroup = clicked.parent;
+                            const originalScale = planetGroup.scale.clone();
+                
+                            // Create temporary A-Frame entity to animate scale
+                            const tempEntity = document.createElement("a-entity");
+                            tempEntity.setAttribute("scale", originalScale);
+                            planetGroup.add(tempEntity.object3D);
+                
+                            // Animate zoom-in
+                            tempEntity.setAttribute("animation__zoom", {
+                                property: "scale",
+                                to: `${originalScale.x * 1.3} ${originalScale.y * 1.3} ${originalScale.z * 1.3}`,
+                                dur: 200,
+                                easing: "easeOutQuad",
+                                autoplay: true
+                              });
+                
+                            // Animate zoom-out after 300ms
+                            setTimeout(() => {
+                                tempEntity.setAttribute("animation__zoomOut", {
+                                  property: "scale",
+                                  to: `${originalScale.x} ${originalScale.y} ${originalScale.z}`,
+                                  dur: 200,
+                                  easing: "easeInQuad",
+                                  autoplay: true
+                                });
+                            }, 300);
                     });
                 });
             }
@@ -123,32 +148,7 @@
             }
             return null;
         }
-        // 🔎 Animate zoom
-        function animateZoom(object3D) {
-            if (!object3D || !object3D.scale) return;
-    
-            const original = object3D.scale.clone();
-            const targetScale = original.clone().multiplyScalar(1.3);
-    
-            new TWEEN.Tween(object3D.scale)
-              .to({ x: targetScale.x, y: targetScale.y, z: targetScale.z }, 200)
-              .easing(TWEEN.Easing.Quadratic.Out)
-              .onComplete(() => {
-                new TWEEN.Tween(object3D.scale)
-                  .to({ x: original.x, y: original.y, z: original.z }, 200)
-                  .easing(TWEEN.Easing.Quadratic.In)
-                  .start();
-              })
-              .start();
-        }
-    
-        // 🌀 Tween animation tick loop
-        AFRAME.registerComponent("tween-tick", {
-            tick: function () {
-                TWEEN.update();
-            }
-        });
-
+        
         
         // 🔥 Attach the component to the solar system model
         document.querySelector("#solarSystem").setAttribute("planet-speech", "");
