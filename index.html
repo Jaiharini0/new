@@ -23,19 +23,14 @@
             <a-assets>
                 <a-asset-item id="solarModel" src="post.glb"></a-asset-item>
                 <a-asset-item id="galaxyModel" src="galaxy.glb"></a-asset-item>
-                <a-asset-item id="blackHoleModel" src="blackhole.glb"></a-asset-item> 
+                <a-asset-item id="blackHoleModel" src="blackhole.glb"></a-asset-item> <!-- Black Hole Model -->
                 <img id="sunTexture" src="sun2.jpg">
-                <img id="fallingImage" src="asteroid.jpeg"> 
             </a-assets>
-        
-            <!-- Falling Image Animation -->
-            <a-image 
-                src="#fallingImage" 
-                position="5 3 -5" 
-                animation="property: position; to: -5 3 -5; dur: 3000; easing: easeInOutSine"
-                animation__fade="property: opacity; to: 0; dur: 0; delay: 2000">
-            </a-image>
 
+            <!-- Asteroid Flash Animation -->
+            <a-entity id="asteroid" geometry="primitive: sphere; radius: 1.5" 
+                      position="0 5 -10" material="color: gray; emissive: #555; emissiveIntensity: 0.8"
+                      animation="property: material.emissiveIntensity; to: 1; dur: 300; loop: true"></a-entity>
 
             <!-- Galaxy Intro -->
             <a-entity id="galaxyIntro"
@@ -46,7 +41,7 @@
                       animation="property: rotation; to: 0 360 0; loop: true; dur: 8000">
             </a-entity>
 
-            <!-- Black Hole (hidden initially) -->
+            <!-- Black Hole -->
             <a-entity id="blackHole"
                       gltf-model="#blackHoleModel"
                       position="0 2 -10"
@@ -62,7 +57,7 @@
                       position="0 2 -30"
                       scale="0.5 0.5 0.5"
                       visible="false"
-                      gesture-controls>
+                      gesture-controls">
             </a-entity>
 
             <!-- Glowing Sun -->
@@ -89,7 +84,6 @@
             utterance.onend = callback;
             speechSynthesis.speak(utterance);
         }
-
         // Get planet name from clicked object
         function getPlanetName(object) {
             while (object) {
@@ -168,7 +162,6 @@
         };
 
 
-
         // AR Start Flow
         document.getElementById('startAR').addEventListener('click', async function () {
             try {
@@ -182,42 +175,61 @@
                     const solar = document.querySelector("#solarSystem");
                     const sun = document.querySelector("#sun");
                     const camera = document.querySelector("#mainCamera");
+                    const asteroid = document.querySelector("#asteroid");
 
-                    // Show Galaxy
-                    galaxy.setAttribute("visible", "true");
+                    // Step 1: Asteroid flashes
+                    asteroid.setAttribute("animation", {
+                        property: "material.emissiveIntensity",
+                        to: 0.8,
+                        dur: 300,
+                        loop: true
+                    });
 
-                    // Narration
-                    introSpeak("Welcome, traveler of the stars… You are entering the Chronicles of the Celestial Classroom. Before you stands the vast spiral galaxy, home to countless wonders. Now… let us journey to a very special corner of this galaxy — our own Solar System. First, observe the cosmic force that is a black hole, and then behold the galaxy fade, giving way to the solar system!", () => {
-                        // Show Black Hole
-                        blackHole.setAttribute("visible", "true");
-                        blackHole.setAttribute("animation", {
-                            property: "scale",
-                            to: "5 5 5",
-                            dur: 5000,
-                            easing: "easeInOutQuad",
-                            autoplay: true
+                    setTimeout(() => {
+                        asteroid.setAttribute("animation", {
+                            property: "material.emissiveIntensity",
+                            to: 0,
+                            dur: 300,
+                            loop: false
                         });
 
-                        // Hide galaxy after black hole animation
-                        setTimeout(() => {
-                            galaxy.setAttribute("visible", "false");
+                        // Step 2: Show Galaxy
+                        galaxy.setAttribute("visible", "true");
 
-                            // Zoom in camera to solar system
-                            camera.setAttribute("animation", {
-                                property: "position",
-                                to: "0 2 10",
-                                dur: 8000,
-                                easing: "easeInOutQuad"
+                        // Narration
+                        introSpeak("Welcome, traveler of the stars… You are entering the Chronicles of the Celestial Classroom. Before you stands the vast spiral galaxy, home to countless wonders. Now… let us journey to a very special corner of this galaxy — our own Solar System. First, observe the cosmic force that is a black hole, and then behold the galaxy fade, giving way to the solar system!", () => {
+
+                            // Step 3: Show Black Hole
+                            blackHole.setAttribute("visible", "true");
+                            blackHole.setAttribute("animation", {
+                                property: "scale",
+                                to: "5 5 5",
+                                dur: 5000,
+                                easing: "easeInOutQuad",
+                                autoplay: true
                             });
 
-                            // Hide black hole and show solar system & sun
-                            blackHole.setAttribute("visible", "false");
-                            solar.setAttribute("visible", "true");
-                            sun.setAttribute("visible", "true");
-                            speak("I am the Sun, the heart of the Solar System. I provide light and warmth to all the planets. My gravity keeps them in orbit. I've been shining for over 4.6 billion years!");
-                            
-                        }, 5000); // After 5 seconds, fade out black hole and start solar system transition
-                    });
+                            // Hide galaxy after black hole animation
+                            setTimeout(() => {
+                                galaxy.setAttribute("visible", "false");
+
+                                // Step 4: Zoom in camera to solar system
+                                camera.setAttribute("animation", {
+                                    property: "position",
+                                    to: "0 2 10",
+                                    dur: 8000,
+                                    easing: "easeInOutQuad"
+                                });
+
+                                // Hide black hole and show solar system & sun
+                                blackHole.setAttribute("visible", "false");
+                                solar.setAttribute("visible", "true");
+                                sun.setAttribute("visible", "true");
+                                speak("I am the Sun, the heart of the Solar System. I provide light and warmth to all the planets. My gravity keeps them in orbit. I've been shining for over 4.6 billion years!");
+                            }, 5000); // After 5 seconds, fade out black hole and start solar system transition
+                        });
+                    }, 2000); // Wait 2 seconds before flashing the asteroid
+
                 }
             } catch (err) {
                 alert("Camera permission denied. Please allow access to use AR.");
