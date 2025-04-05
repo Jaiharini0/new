@@ -25,7 +25,16 @@
                 <a-asset-item id="galaxyModel" src="galaxy.glb"></a-asset-item>
                 <a-asset-item id="blackHoleModel" src="blackhole.glb"></a-asset-item> <!-- Black Hole Model -->
                 <img id="sunTexture" src="sun2.jpg">
+                <img id="fallingImage" src="asteroid.jpeg"> <!-- Add your falling image here -->
             </a-assets>
+        
+            <!-- Falling Image Animation -->
+            <a-image 
+                src="#fallingImage" 
+                position="5 3 -5" 
+                animation="property: position; to: -5 3 -5; dur: 3000; easing: easeInOutSine"
+                animation__fade="property: opacity; to: 0; dur: 0; delay: 2000"></a-image>
+
 
             <!-- Galaxy Intro -->
             <a-entity id="galaxyIntro"
