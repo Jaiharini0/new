@@ -58,6 +58,12 @@
                 <a-cursor></a-cursor>
             </a-camera>
         </a-scene>
+        <div id="quiz-container" style="display: none; position: absolute; top: 10%; left: 5%; background: rgba(0,0,0,0.8); color: white; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1000;">
+          <h3>Solar System Quiz</h3>
+          <p id="quiz-question"></p>
+          <div id="quiz-options"></div>
+          <button onclick="nextQuestion()">Next</button>
+        </div>
     </div>
 
     <script>
@@ -128,6 +134,7 @@
                         
                         if (planetName) {
                             speak(planetDescriptions[planetName] || "I am a mysterious celestial body.");
+                            createLabel(planetName, el);
                             // 🌀 Animate the clicked mesh's parent
                             const planetGroup = clicked.parent;
                             const originalScale = planetGroup.scale.clone();
@@ -161,27 +168,7 @@
                 });
             }
         });
-        // Function to create a label and display it above the planet
-        function createLabel(planetName, planet) {
-            // Create the label entity
-            let label = document.createElement("a-entity");
         
-            // Set the label text, position, and scale
-            label.setAttribute("text", {
-                value: planetName,
-                align: "center",
-                width: 3
-            });
-            label.setAttribute("position", {
-                x: planet.position.x,
-                y: planet.position.y + 2,  // Position label above the planet
-                z: planet.position.z
-            });
-            label.setAttribute("scale", "2 2 2");
-        
-            // Add the label to the scene
-            document.querySelector("a-scene").appendChild(label);
-        }
         
         // 🎙️ Function to make planets speak
         function speak(text) {
@@ -203,6 +190,33 @@
             Uranus: "I am Uranus, I rotate on my side!, and I am a frozen gas giant!",
             Neptune: "I am Neptune, the farthest planet from the Sun. My winds are the fastest in the Solar System!"
         };
+        // ✅ Add this here
+        function createLabel(planetName, planet) {
+            let existingLabel = document.querySelector(`#label-${planetName}`);
+            if (existingLabel) return;
+        
+            let label = document.createElement("a-entity");
+            label.setAttribute("id", `label-${planetName}`);
+            label.setAttribute("text", {
+                value: planetName,
+                align: "center",
+                color: "#FFFFFF",
+                side: "double",
+                width: 2,
+                baseline: "bottom"
+            });
+        
+            let pos = planet.object3D.position;
+            label.setAttribute("position", {
+                x: pos.x,
+                y: pos.y + 1.5,
+                z: pos.z
+            });
+        
+            label.setAttribute("look-at", "[camera]");
+            label.setAttribute("scale", "1 1 1");
+            document.querySelector("a-scene").appendChild(label);
+        }
         
         // 🔎 Function to get the planet name from the clicked object
         function getPlanetName(object) {
@@ -216,6 +230,63 @@
         }
         
         document.querySelector("#solarSystem").setAttribute("planet-speech", "");
+
+        const quizData = [
+          {
+            question: "Which planet is known as the Red Planet?",
+            options: ["Venus", "Mars", "Jupiter"],
+            answer: "Mars"
+          },
+          {
+            question: "Which is the largest planet in our Solar System?",
+            options: ["Earth", "Saturn", "Jupiter"],
+            answer: "Jupiter"
+          },
+          {
+            question: "Which planet has beautiful rings?",
+            options: ["Uranus", "Saturn", "Neptune"],
+            answer: "Saturn"
+          }
+        ];
+        
+        let currentQuestion = 0;
+        
+        function showQuiz() {
+          document.getElementById("quiz-container").style.display = "block";
+          loadQuestion();
+        }
+        
+        function loadQuestion() {
+          let q = quizData[currentQuestion];
+          document.getElementById("quiz-question").innerText = q.question;
+        
+          let optionsHTML = "";
+          q.options.forEach(opt => {
+            optionsHTML += `<button onclick="checkAnswer('${opt}')" style="margin: 5px;">${opt}</button>`;
+          });
+          document.getElementById("quiz-options").innerHTML = optionsHTML;
+        }
+        
+        function checkAnswer(selected) {
+          let correct = quizData[currentQuestion].answer;
+          if (selected === correct) {
+            alert("✅ Correct!");
+          } else {
+            alert("❌ Oops! The correct answer is: " + correct);
+          }
+        }
+        
+        function nextQuestion() {
+          currentQuestion++;
+          if (currentQuestion < quizData.length) {
+            loadQuestion();
+          } else {
+            alert("🎉 Quiz Completed!");
+            document.getElementById("quiz-container").style.display = "none";
+            currentQuestion = 0;
+          }
+        }
+
 
         
     </script>
