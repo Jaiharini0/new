@@ -1,294 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
-    <title>WebAR Solar System</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <title>WebAR Solar System</title>
 
-    <!-- A-Frame & AR.js -->
-    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.min.js"></script>
-    <script src="https://unpkg.com/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+  <!-- A-Frame & AR.js -->
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/jeromeetienne/ar.js/aframe/build/aframe-ar.min.js"></script>
+  <script src="https://unpkg.com/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
 </head>
 
 <body style="margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh;">
-    <button id="startAR" style="padding: 15px 30px; font-size: 16px; cursor: pointer;">
-        Start AR Experience
-    </button>
+  <button id="startAR" style="padding: 15px 30px; font-size: 16px; cursor: pointer;">
+    Start AR Experience
+  </button>
 
-    <div id="arContainer" style="display: none; width: 100%; height: 100%;">
-        <a-scene embedded arjs="sourceType: webcam;">
-            <!-- Assets -->
-            <a-assets>
-                <!-- Add the asteroid image -->
-                <a-asset-item id="solarModel" src="post.glb"></a-asset-item>
-                <a-asset-item id="galaxyModel" src="galaxy.glb"></a-asset-item>
-                <img id="sunTexture" src="sun2.jpg">
-            </a-assets>
+  <div id="arContainer" style="display: none; width: 100%; height: 100%;">
+    <a-scene embedded arjs="sourceType: webcam;">
+      <!-- Assets -->
+      <a-assets>
+        <a-asset-item id="solarModel" src="post.glb"></a-asset-item>
+        <a-asset-item id="galaxyModel" src="galaxy.glb"></a-asset-item>
+        <img id="sunTexture" src="sun2.jpg">
+      </a-assets>
 
-            <!-- Galaxy Intro -->
-            <a-entity id="galaxyIntro"
-                      gltf-model="#galaxyModel"
-                      position="0 2 -30"
-                      scale="5 5 5"
-                      visible="false"
-                      animation="property: rotation; to: 0 360 0; loop: true; dur: 2000">
-            </a-entity>
+      <!-- Galaxy Intro -->
+      <a-entity id="galaxyIntro"
+                gltf-model="#galaxyModel"
+                position="0 2 -30"
+                scale="5 5 5"
+                visible="false"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 2000">
+      </a-entity>
 
-            <!-- Solar System (hidden initially) -->
-            <a-entity id="solarSystem"
-                      gltf-model="#solarModel"
-                      animation-mixer
-                      position="0 2 -30"
-                      scale="0.5 0.5 0.5"
-                      visible="false"
-                      gesture-controls>
-            </a-entity>
+      <!-- Solar System (hidden initially) -->
+      <a-entity id="solarSystem"
+                gltf-model="#solarModel"
+                animation-mixer
+                position="0 2 -30"
+                scale="0.5 0.5 0.5"
+                visible="false"
+                gesture-controls>
+      </a-entity>
 
-            <!-- Glowing Sun -->
-            <a-entity id="sun"
-                      geometry="primitive: sphere; radius: 1.2"
-                      material="src: #sunTexture; shader: standard; emissiveIntensity: 1"
-                      position="0 2 -30"
-                      visible="false">
-            </a-entity>
-            <!-- Camera -->
-            <a-camera id="mainCamera" position="1 5 5" rotation="-30 -45 0" look-controls>
-                <a-cursor></a-cursor>
-            </a-camera>
-        </a-scene>
-        <div id="quiz-container" style="display: none; position: absolute; top: 10%; left: 5%; background: rgba(0,0,0,0.8); color: white; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1000;">
-          <h3>Solar System Quiz</h3>
-          <p id="quiz-question"></p>
-          <div id="quiz-options"></div>
-          <button onclick="nextQuestion()">Next</button>
-        </div>
+      <!-- Glowing Sun -->
+      <a-entity id="sun"
+                geometry="primitive: sphere; radius: 1.2"
+                material="src: #sunTexture; shader: standard; emissiveIntensity: 1"
+                position="0 2 -30"
+                visible="false">
+      </a-entity>
+
+      <!-- Quiz Button -->
+      <a-entity id="quizButton"
+                geometry="primitive: plane; height: 0.4; width: 1.5"
+                material="color: #28a745; opacity: 0.9"
+                position="0 1.5 -3"
+                text="value: Take the Quiz; align: center; color: white; width: 4"
+                visible="false"
+                class="clickable"
+                onclick="showQuiz()">
+      </a-entity>
+
+      <!-- Camera -->
+      <a-camera id="mainCamera" position="1 5 5" rotation="-30 -45 0" look-controls>
+        <a-cursor></a-cursor>
+      </a-camera>
+    </a-scene>
+
+    <!-- Quiz UI -->
+    <div id="quiz-container" style="display: none; position: absolute; top: 10%; left: 5%; background: rgba(0,0,0,0.8); color: white; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1000;">
+      <h3>Solar System Quiz</h3>
+      <p id="quiz-question"></p>
+      <div id="quiz-options"></div>
+      <button onclick="nextQuestion()">Next</button>
     </div>
+  </div>
 
-    <script>
-        // Intro voice narration with callback
-        function introSpeak(text, callback) {
-            let utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = "en-US";
-            utterance.rate = 1;
-            utterance.onend = callback;
-            speechSynthesis.speak(utterance);
-        }
-        // AR Start Flow
-        document.getElementById('startAR').addEventListener('click', async function () {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                if (stream) {
-                    document.getElementById('startAR').style.display = 'none';
-                    document.getElementById('arContainer').style.display = 'block';
+  <script>
+    function introSpeak(text, callback) {
+      let utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 1;
+      utterance.onend = callback;
+      speechSynthesis.speak(utterance);
+    }
 
-                    const galaxy = document.querySelector("#galaxyIntro");
-                    const solar = document.querySelector("#solarSystem");
-                    const sun = document.querySelector("#sun");
-                    const camera = document.querySelector("#mainCamera");
+    document.getElementById('startAR').addEventListener('click', async function () {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        if (stream) {
+          document.getElementById('startAR').style.display = 'none';
+          document.getElementById('arContainer').style.display = 'block';
 
-                    // Show Galaxy
-                    galaxy.setAttribute("visible", "true");
-                    
+          const galaxy = document.querySelector("#galaxyIntro");
+          const solar = document.querySelector("#solarSystem");
+          const sun = document.querySelector("#sun");
+          const camera = document.querySelector("#mainCamera");
 
-                    // Narration
-                    introSpeak("Welcome, You are entering the Chronicles of the Celestial Classroom. Before you stands the vast spiral galaxy, home to countless wonders. Now… let us journey to a very special corner of this galaxy — our own Solar System.", () => {
-                        
+          galaxy.setAttribute("visible", "true");
 
-                        // // Hide galaxy
-                        setTimeout(() => {
-                            // Zoom in camera to solar system
-                            camera.setAttribute("animation", {
-                                property: "position",
-                                dur: 5000,
-                                easing: "easeInOutQuad"
-                            });
+          introSpeak("Welcome, You are entering the Chronicles of the Celestial Classroom. Before you stands the vast spiral galaxy, home to countless wonders. Now… let us journey to a very special corner of this galaxy — our own Solar System.", () => {
+            setTimeout(() => {
+              camera.setAttribute("animation", {
+                property: "position",
+                to: "1 5 5",
+                dur: 5000,
+                easing: "easeInOutQuad"
+              });
 
-                            //show solar system & sun
-                            galaxy.setAttribute("visible", "false");
-                            solar.setAttribute("visible", "true");
-                            sun.setAttribute("visible", "true");
-                            speak("I am the Sun, the heart of the Solar System. I provide light and warmth to all the planets. My gravity keeps them in orbit. I've been shining for over 4.6 billion years!");
-                            // Make planet speak on tap
-                        
-                        }, 5000); // After 5 seconds, fade out black hole and start solar system transition
-                    });
-                }
-            } catch (err) {
-                alert("Camera permission denied. Please allow access to use AR.");
-            }
-        });
-        
-        //tap-to-speak
-        AFRAME.registerComponent("planet-speech", {
-            init: function () {
-                let el = this.el;
-                el.addEventListener("model-loaded", function () {
-                    let model = el.getObject3D("mesh");
-                    if (!model) return;
-        
-                    el.addEventListener("click", function (event) {
-                        let clickedPlanet = event.detail.intersection.object; // Get clicked object
-                        let planetName = getPlanetName(clickedPlanet);
-                        
-                        if (planetName) {
-                            speak(planetDescriptions[planetName] || "I am a mysterious celestial body.");
-                            createLabel(planetName, el);
-                            // 🌀 Animate the clicked mesh's parent
-                            const planetGroup = clicked.parent;
-                            const originalScale = planetGroup.scale.clone();
-                
-                            // Create temporary A-Frame entity to animate scale
-                            const tempEntity = document.createElement("a-entity");
-                            tempEntity.setAttribute("scale", originalScale);
-                            planetGroup.add(tempEntity.object3D);
-                
-                            // Animate zoom-in
-                            tempEntity.setAttribute("animation__zoom", {
-                                property: "scale",
-                                to: `${originalScale.x * 1.3} ${originalScale.y * 1.3} ${originalScale.z * 1.3}`,
-                                dur: 200,
-                                easing: "easeOutQuad",
-                                autoplay: true
-                              });
-                
-                            // Animate zoom-out after 300ms
-                            setTimeout(() => {
-                                tempEntity.setAttribute("animation__zoomOut", {
-                                  property: "scale",
-                                  to: `${originalScale.x} ${originalScale.y} ${originalScale.z}`,
-                                  dur: 200,
-                                  easing: "easeInQuad",
-                                  autoplay: true
-                                });
-                            }, 300);
-                        }
-                    });
-                });
-            }
-        });
-        
-        
-        // 🎙️ Function to make planets speak
-        function speak(text) {
-            let utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = "en-US"; // Set language
-            utterance.rate = 1; // Adjust speed
-            speechSynthesis.speak(utterance);
-        }
-        
-        // 🌍 Define planet descriptions
-        const planetDescriptions = {
-            Sun: "I am the Sun, the heart of the Solar System. I provide light and warmth to all the planets!. My gravity keeps the planets in orbit!.I have been shining for over 4.6 billion years! My surface temperature is around 5,500°C",
-            Mercury: "I am Mercury, the closest planet to the Sun. I am small but incredibly fast!",
-            Venus: "I am Venus, the hottest planet in the solar system, covered with thick clouds!.",
-            Earth: "Hello! I am Earth, your home planet. The only planet known to support life.",
-            Mars: "I am Mars, also called the Red Planet. Scientists are searching for signs of life here.",
-            Jupiter: "I am Jupiter, the biggest planet in the solar system. My Great Red Spot is a giant storm!",
-            Saturn: "I am Saturn, famous for my beautiful rings made of ice and rock!.",
-            Uranus: "I am Uranus, I rotate on my side!, and I am a frozen gas giant!",
-            Neptune: "I am Neptune, the farthest planet from the Sun. My winds are the fastest in the Solar System!"
-        };
-        // ✅ Add this here
-        function createLabel(planetName, planet) {
-            let existingLabel = document.querySelector(`#label-${planetName}`);
-            if (existingLabel) return;
-        
-            let label = document.createElement("a-entity");
-            label.setAttribute("id", `label-${planetName}`);
-            label.setAttribute("text", {
-                value: planetName,
-                align: "center",
-                color: "#FFFFFF",
-                side: "double",
-                width: 2,
-                baseline: "bottom"
-            });
-        
-            let pos = planet.object3D.position;
-            label.setAttribute("position", {
-                x: pos.x,
-                y: pos.y + 1.5,
-                z: pos.z
-            });
-        
-            label.setAttribute("look-at", "[camera]");
-            label.setAttribute("scale", "1 1 1");
-            document.querySelector("a-scene").appendChild(label);
-        }
-        
-        // 🔎 Function to get the planet name from the clicked object
-        function getPlanetName(object) {
-            while (object) {
-                if (planetDescriptions[object.name]) {
-                    return object.name; // Return matching planet name
-                }
-                object = object.parent; // Move up hierarchy if needed
-            }
-            return null;
-        }
-        
-        document.querySelector("#solarSystem").setAttribute("planet-speech", "");
+              galaxy.setAttribute("visible", "false");
+              solar.setAttribute("visible", "true");
+              sun.setAttribute("visible", "true");
 
-        const quizData = [
-          {
-            question: "Which planet is known as the Red Planet?",
-            options: ["Venus", "Mars", "Jupiter"],
-            answer: "Mars"
-          },
-          {
-            question: "Which is the largest planet in our Solar System?",
-            options: ["Earth", "Saturn", "Jupiter"],
-            answer: "Jupiter"
-          },
-          {
-            question: "Which planet has beautiful rings?",
-            options: ["Uranus", "Saturn", "Neptune"],
-            answer: "Saturn"
-          }
-        ];
-        
-        let currentQuestion = 0;
-        
-        function showQuiz() {
-          document.getElementById("quiz-container").style.display = "block";
-          loadQuestion();
-        }
-        
-        function loadQuestion() {
-          let q = quizData[currentQuestion];
-          document.getElementById("quiz-question").innerText = q.question;
-        
-          let optionsHTML = "";
-          q.options.forEach(opt => {
-            optionsHTML += `<button onclick="checkAnswer('${opt}')" style="margin: 5px;">${opt}</button>`;
+              // Show quiz button now
+              document.querySelector("#quizButton").setAttribute("visible", "true");
+
+              speak(planetDescriptions["Sun"]);
+            }, 5000);
           });
-          document.getElementById("quiz-options").innerHTML = optionsHTML;
         }
-        
-        function checkAnswer(selected) {
-          let correct = quizData[currentQuestion].answer;
-          if (selected === correct) {
-            alert("✅ Correct!");
-          } else {
-            alert("❌ Oops! The correct answer is: " + correct);
-          }
-        }
-        
-        function nextQuestion() {
-          currentQuestion++;
-          if (currentQuestion < quizData.length) {
-            loadQuestion();
-          } else {
-            alert("🎉 Quiz Completed!");
-            document.getElementById("quiz-container").style.display = "none";
-            currentQuestion = 0;
-          }
-        }
+      } catch (err) {
+        alert("Camera permission denied. Please allow access to use AR.");
+      }
+    });
 
+    AFRAME.registerComponent("planet-speech", {
+      init: function () {
+        let el = this.el;
+        el.addEventListener("model-loaded", function () {
+          el.addEventListener("click", function (event) {
+            let clickedPlanet = event.detail.intersection.object;
+            let planetName = getPlanetName(clickedPlanet);
 
-        
-    </script>
+            if (planetName) {
+              speak(planetDescriptions[planetName] || "I am a mysterious celestial body.");
+              createLabel(planetName, el);
+            }
+          });
+        });
+      }
+    });
+
+    let label = null;
+
+    function speak(text) {
+      let utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-US";
+      utterance.rate = 1;
+      utterance.onend = function () {
+        if (label && label.parentNode) {
+          label.parentNode.removeChild(label);
+          label = null;
+        }
+      };
+      speechSynthesis.speak(utterance);
+    }
+
+    const planetDescriptions = {
+      Sun: "I am the Sun, the heart of the Solar System. I provide light and warmth to all the planets!. My gravity keeps the planets in orbit!.I have been shining for over 4.6 billion years! My surface temperature is around 5,500°C",
+      Mercury: "I am Mercury, the closest planet to the Sun. I am small but incredibly fast!",
+      Venus: "I am Venus, the hottest planet in the solar system, covered with thick clouds!.",
+      Earth: "Hello! I am Earth, your home planet. The only planet known to support life.",
+      Mars: "I am Mars, also called the Red Planet. Scientists are searching for signs of life here.",
+      Jupiter: "I am Jupiter, the biggest planet in the solar system. My Great Red Spot is a giant storm!",
+      Saturn: "I am Saturn, famous for my beautiful rings made of ice and rock!.",
+      Uranus: "I am Uranus, I rotate on my side!, and I am a frozen gas giant!",
+      Neptune: "I am Neptune, the farthest planet from the Sun. My winds are the fastest in the Solar System!"
+    };
+
+    function createLabel(planetName, planet) {
+      let existingLabel = document.querySelector(`#label-${planetName}`);
+      if (existingLabel) return;
+
+      label = document.createElement("a-entity");
+      label.setAttribute("id", `label-${planetName}`);
+      label.setAttribute("text", {
+        value: planetName,
+        align: "center",
+        color: "#FFFFFF",
+        side: "double",
+        width: 50,
+        baseline: "bottom"
+      });
+
+      let pos = planet.object3D.position;
+      label.setAttribute("position", {
+        x: pos.x,
+        y: pos.y + 1.5,
+        z: pos.z
+      });
+
+      label.setAttribute("look-at", "[camera]");
+      label.setAttribute("scale", "1 1 1");
+      document.querySelector("a-scene").appendChild(label);
+    }
+
+    function getPlanetName(object) {
+      while (object) {
+        if (planetDescriptions[object.name]) {
+          return object.name;
+        }
+        object = object.parent;
+      }
+      return null;
+    }
+
+    document.querySelector("#solarSystem").setAttribute("planet-speech", "");
+
+    const quizData = [
+      {
+        question: "Which planet is known as the Red Planet?",
+        options: ["Venus", "Mars", "Jupiter"],
+        answer: "Mars"
+      },
+      {
+        question: "Which is the largest planet in our Solar System?",
+        options: ["Earth", "Saturn", "Jupiter"],
+        answer: "Jupiter"
+      },
+      {
+        question: "Which planet has beautiful rings?",
+        options: ["Uranus", "Saturn", "Neptune"],
+        answer: "Saturn"
+      }
+    ];
+
+    let currentQuestion = 0;
+
+    function showQuiz() {
+      document.getElementById("quiz-container").style.display = "block";
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      let q = quizData[currentQuestion];
+      document.getElementById("quiz-question").innerText = q.question;
+
+      let optionsHTML = "";
+      q.options.forEach(opt => {
+        optionsHTML += `<button onclick="checkAnswer('${opt}')" style="margin: 5px;">${opt}</button>`;
+      });
+      document.getElementById("quiz-options").innerHTML = optionsHTML;
+    }
+
+    function checkAnswer(selected) {
+      let correct = quizData[currentQuestion].answer;
+      if (selected === correct) {
+        alert("✅ Correct!");
+      } else {
+        alert("❌ Oops! The correct answer is: " + correct);
+      }
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        alert("🎉 Quiz Completed!");
+        document.getElementById("quiz-container").style.display = "none";
+        currentQuestion = 0;
+      }
+    }
+  </script>
 </body>
 </html>
