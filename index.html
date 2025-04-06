@@ -18,7 +18,7 @@
   </button>
 
   <div id="arContainer" style="display: none; width: 100%; height: 100%;">
-    <a-scene embedded arjs="sourceType: webcam;">
+    <a-scene embedded arjs="sourceType: webcam;" cursor="rayOrigin: mouse; fuse: false" raycaster="objects: .clickable">
       <!-- Assets -->
       <a-assets>
         <a-asset-item id="solarModel" src="post.glb"></a-asset-item>
@@ -131,9 +131,22 @@
       init: function () {
         let el = this.el;
         el.addEventListener("model-loaded", function () {
+          const mesh = this.el.getObject3D("mesh");
+            if (!mesh) return;
+      
+            mesh.traverse((node) => {
+              if (node.isMesh && getPlanetName(node)) {
+                node.el = this.el; // Attach reference for label creation
+                node.name = getPlanetName(node);
+                node.userData.clickable = true;
+              }
+            });
+          });
           el.addEventListener("click", function (event) {
-            let clickedPlanet = event.detail.intersection.object;
-            let planetName = getPlanetName(clickedPlanet);
+            const intersection = event.detail.intersections?.[0];
+            if (!intersection) return;
+            const clickedPlanet = intersection.object;
+            const planetName = getPlanetName(clickedPlanet);
 
             if (planetName) {
               speak(planetDescriptions[planetName] || "I am a mysterious celestial body.");
