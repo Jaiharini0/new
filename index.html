@@ -18,7 +18,7 @@
   </button>
 
   <div id="arContainer" style="display: none; width: 100%; height: 100%;">
-    <a-scene embedded arjs="sourceType: webcam;" cursor="rayOrigin: mouse; fuse: false" raycaster="objects: .clickable">
+    <a-scene embedded arjs="sourceType: webcam;">
       <!-- Assets -->
       <a-assets>
         <a-asset-item id="solarModel" src="post.glb"></a-asset-item>
@@ -72,6 +72,9 @@
 
     <!-- Quiz UI -->
     <div id="quiz-container" style="display: none; position: absolute; top: 10%; left: 5%; background: rgba(0,0,0,0.8); color: white; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1000;">
+      <div style="text-align: right;">
+        <button onclick="closeQuiz()" style="font-size: 18px; background: none; color: white; border: none; cursor: pointer;">✖️</button>
+      </div>
       <h3>Solar System Quiz</h3>
       <p id="quiz-question"></p>
       <div id="quiz-options"></div>
@@ -131,22 +134,9 @@
       init: function () {
         let el = this.el;
         el.addEventListener("model-loaded", function () {
-          const mesh = this.el.getObject3D("mesh");
-            if (!mesh) return;
-      
-            mesh.traverse((node) => {
-              if (node.isMesh && getPlanetName(node)) {
-                node.el = this.el; // Attach reference for label creation
-                node.name = getPlanetName(node);
-                node.userData.clickable = true;
-              }
-            });
-          });
           el.addEventListener("click", function (event) {
-            const intersection = event.detail.intersections?.[0];
-            if (!intersection) return;
-            const clickedPlanet = intersection.object;
-            const planetName = getPlanetName(clickedPlanet);
+            let clickedPlanet = event.detail.intersection.object;
+            let planetName = getPlanetName(clickedPlanet);
 
             if (planetName) {
               speak(planetDescriptions[planetName] || "I am a mysterious celestial body.");
@@ -185,11 +175,11 @@
     };
 
     function createLabel(planetName, planet) {
-      let existingLabel = document.querySelector(`#label-${planetName}`);
+      let existingLabel = document.querySelector(#label-${planetName});
       if (existingLabel) return;
 
       label = document.createElement("a-entity");
-      label.setAttribute("id", `label-${planetName}`);
+      label.setAttribute("id", label-${planetName});
       label.setAttribute("text", {
         value: planetName,
         align: "center",
@@ -254,7 +244,7 @@
 
       let optionsHTML = "";
       q.options.forEach(opt => {
-        optionsHTML += `<button onclick="checkAnswer('${opt}')" style="margin: 5px;">${opt}</button>`;
+        optionsHTML += <button onclick="checkAnswer('${opt}')" style="margin: 5px;">${opt}</button>;
       });
       document.getElementById("quiz-options").innerHTML = optionsHTML;
     }
@@ -277,6 +267,9 @@
         document.getElementById("quiz-container").style.display = "none";
         currentQuestion = 0;
       }
+    }
+    function closeQuiz() {
+      document.getElementById("quiz-container").style.display = "none";
     }
   </script>
 </body>
