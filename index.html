@@ -90,8 +90,7 @@
 
     document.getElementById('startAR').addEventListener('click', async function () {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        if (stream) {
+       
           document.getElementById('startAR').style.display = 'none';
           document.getElementById('arContainer').style.display = 'block';
 
@@ -121,7 +120,7 @@
               speak(planetDescriptions["Sun"]);
             }, 5000);
           });
-        }
+        
       } catch (err) {
         alert("Camera permission denied. Please allow access to use AR.");
       }
