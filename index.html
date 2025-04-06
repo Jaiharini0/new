@@ -90,7 +90,8 @@
 
     document.getElementById('startAR').addEventListener('click', async function () {
       try {
-       
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        if (stream) {
           document.getElementById('startAR').style.display = 'none';
           document.getElementById('arContainer').style.display = 'block';
 
@@ -120,7 +121,7 @@
               speak(planetDescriptions["Sun"]);
             }, 5000);
           });
-        
+        }
       } catch (err) {
         alert("Camera permission denied. Please allow access to use AR.");
       }
@@ -171,11 +172,11 @@
     };
 
     function createLabel(planetName, planet) {
-      let existingLabel = document.querySelector(#label-${planetName});
+      let existingLabel = document.querySelector(`#label-${planetName}`);
       if (existingLabel) return;
 
       label = document.createElement("a-entity");
-      label.setAttribute("id", label-${planetName});
+      label.setAttribute("id", `label-${planetName}`);
       label.setAttribute("text", {
         value: planetName,
         align: "center",
@@ -240,7 +241,7 @@
 
       let optionsHTML = "";
       q.options.forEach(opt => {
-        optionsHTML += <button onclick="checkAnswer('${opt}')" style="margin: 5px;">${opt}</button>;
+        optionsHTML += `<button onclick="checkAnswer('${opt}')" style="margin: 5px;">${opt}</button>`;
       });
       document.getElementById("quiz-options").innerHTML = optionsHTML;
     }
