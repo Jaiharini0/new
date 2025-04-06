@@ -65,15 +65,10 @@
       </a-entity>
 
       <!-- Camera with raycaster & cursor -->
-      <a-camera id="mainCamera"
-                position="1 5 5"
-                rotation="-30 -45 0"
-                look-controls
-                raycaster="objects: .clickable"
-                cursor="fuse: false; rayOrigin: mouse">
+      <a-camera id="mainCamera" position="1 5 5" rotation="-30 -45 0" look-controls>
+        <a-cursor></a-cursor>
       </a-camera>
     </a-scene>
-
     <!-- Quiz UI -->
     <div id="quiz-container" style="display: none; position: absolute; top: 10%; left: 5%; background: rgba(0,0,0,0.8); color: white; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1000;">
       <div style="text-align: right;">
@@ -109,15 +104,15 @@
     }
 
     const planetDescriptions = {
-      Sun: "I am the Sun, the heart of the Solar System...",
-      Mercury: "I am Mercury, the closest planet to the Sun...",
-      Venus: "I am Venus, the hottest planet...",
-      Earth: "Hello! I am Earth, your home planet...",
-      Mars: "I am Mars, also called the Red Planet...",
-      Jupiter: "I am Jupiter, the biggest planet...",
-      Saturn: "I am Saturn, famous for my beautiful rings...",
-      Uranus: "I am Uranus, I rotate on my side...",
-      Neptune: "I am Neptune, the farthest planet..."
+      Sun: "I am the Sun, the heart of the Solar System. I provide light and warmth to all the planets!. My gravity keeps the planets in orbit!.I have been shining for over 4.6 billion years! My surface temperature is around 5,500°C",
+      Mercury: "I am Mercury, the closest planet to the Sun. I am small but incredibly fast!",
+      Venus: "I am Venus, the hottest planet in the solar system, covered with thick clouds!.",
+      Earth: "Hello! I am Earth, your home planet. The only planet known to support life.",
+      Mars: "I am Mars, also called the Red Planet. Scientists are searching for signs of life here.",
+      Jupiter: "I am Jupiter, the biggest planet in the solar system. My Great Red Spot is a giant storm!",
+      Saturn: "I am Saturn, famous for my beautiful rings made of ice and rock!.",
+      Uranus: "I am Uranus, I rotate on my side!, and I am a frozen gas giant!",
+      Neptune: "I am Neptune, the farthest planet from the Sun. My winds are the fastest in the Solar System!"
     };
 
     let label = null;
@@ -158,26 +153,19 @@
       }
       return null;
     }
+     document.querySelector("#solarSystem").setAttribute("planet-speech", "");
 
     AFRAME.registerComponent("planet-speech", {
       init: function () {
-        const el = this.el;
+        let el = this.el;
         el.addEventListener("model-loaded", function () {
-          el.object3D.traverse(function (node) {
-            if (node.isMesh) {
-              node.el = el;
-              node.name && el.classList.add("clickable");
-            }
-          });
-
           el.addEventListener("click", function (event) {
-            const intersection = event.detail.intersection;
-            if (!intersection) return;
-            const clicked = intersection.object;
-            const name = getPlanetName(clicked);
-            if (name) {
-              speak(planetDescriptions[name] || "I am a mysterious celestial body.");
-              createLabel(name, el);
+            let clickedPlanet = event.detail.intersection.object;
+            let planetName = getPlanetName(clickedPlanet);
+
+            if (planetName) {
+              speak(planetDescriptions[planetName] || "I am a mysterious celestial body.");
+              createLabel(planetName, el);
             }
           });
         });
