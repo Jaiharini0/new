@@ -12,18 +12,13 @@
   <script src="https://unpkg.com/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
 </head>
 
-<body style="margin: 0; overflow: hidden;">
+<body style="margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh;">
   <button id="startAR" style="padding: 15px 30px; font-size: 16px; cursor: pointer;">
     Start AR Experience
   </button>
 
   <div id="arContainer" style="display: none; width: 100%; height: 100%;">
-    <a-scene 
-      embedded 
-      arjs="sourceType: webcam;" 
-      cursor="rayOrigin: mouse" 
-      raycaster="objects: .clickable">
-
+    <a-scene embedded arjs="sourceType: webcam;">
       <!-- Assets -->
       <a-assets>
         <a-asset-item id="solarModel" src="post.glb"></a-asset-item>
@@ -47,8 +42,6 @@
                 position="0 2 -30"
                 scale="0.5 0.5 0.5"
                 visible="false"
-                planet-speech
-                class="clickable"
                 gesture-controls>
       </a-entity>
 
@@ -59,9 +52,6 @@
                 position="0 2 -30"
                 visible="false">
       </a-entity>
-
-      <!-- Test Box for Click Debugging -->
-      <!-- <a-box position="0 1.5 -3" class="clickable" color="blue" onclick="alert('Box clicked!')"></a-box> -->
 
       <!-- Quiz Button -->
       <a-entity id="quizButton"
@@ -75,14 +65,13 @@
       </a-entity>
 
       <!-- Camera -->
-      <a-camera id="mainCamera" position="1 5 5" rotation="-30 -45 0" look-controls></a-camera>
+      <a-camera id="mainCamera" position="1 5 5" rotation="-30 -45 0" look-controls>
+        <a-cursor></a-cursor>
+      </a-camera>
     </a-scene>
 
     <!-- Quiz UI -->
     <div id="quiz-container" style="display: none; position: absolute; top: 10%; left: 5%; background: rgba(0,0,0,0.8); color: white; padding: 20px; border-radius: 15px; width: 90%; max-width: 400px; z-index: 1000;">
-      <div style="text-align: right;">
-        <button onclick="hideQuiz()" style="background: transparent; border: none; font-size: 24px; color: white; cursor: pointer;">&#x2715;</button>
-      </div>
       <h3>Solar System Quiz</h3>
       <p id="quiz-question"></p>
       <div id="quiz-options"></div>
@@ -140,20 +129,17 @@
 
     AFRAME.registerComponent("planet-speech", {
       init: function () {
-        const el = this.el;
-        const sceneEl = el.sceneEl;
+        let el = this.el;
+        el.addEventListener("model-loaded", function () {
+          el.addEventListener("click", function (event) {
+            let clickedPlanet = event.detail.intersection.object;
+            let planetName = getPlanetName(clickedPlanet);
 
-        sceneEl.addEventListener("click", (evt) => {
-          const raycaster = sceneEl.components.raycaster;
-          const intersection = raycaster.getIntersection(el);
-
-          if (intersection && intersection.object) {
-            let planetName = getPlanetName(intersection.object);
             if (planetName) {
               speak(planetDescriptions[planetName] || "I am a mysterious celestial body.");
               createLabel(planetName, el);
             }
-          }
+          });
         });
       }
     });
@@ -186,11 +172,11 @@
     };
 
     function createLabel(planetName, planet) {
-      let existingLabel = document.querySelector(`#label-${planetName}`);
+      let existingLabel = document.querySelector(#label-${planetName});
       if (existingLabel) return;
 
       label = document.createElement("a-entity");
-      label.setAttribute("id", `label-${planetName}`);
+      label.setAttribute("id", label-${planetName});
       label.setAttribute("text", {
         value: planetName,
         align: "center",
@@ -222,7 +208,8 @@
       return null;
     }
 
-    // QUIZ LOGIC
+    document.querySelector("#solarSystem").setAttribute("planet-speech", "");
+
     const quizData = [
       {
         question: "Which planet is known as the Red Planet?",
@@ -248,18 +235,13 @@
       loadQuestion();
     }
 
-    function hideQuiz() {
-      document.getElementById("quiz-container").style.display = "none";
-      currentQuestion = 0;
-    }
-
     function loadQuestion() {
       let q = quizData[currentQuestion];
       document.getElementById("quiz-question").innerText = q.question;
 
       let optionsHTML = "";
       q.options.forEach(opt => {
-        optionsHTML += `<button onclick="checkAnswer('${opt}')" style="margin: 5px;">${opt}</button>`;
+        optionsHTML += <button onclick="checkAnswer('${opt}')" style="margin: 5px;">${opt}</button>;
       });
       document.getElementById("quiz-options").innerHTML = optionsHTML;
     }
@@ -279,7 +261,8 @@
         loadQuestion();
       } else {
         alert("🎉 Quiz Completed!");
-        hideQuiz();
+        document.getElementById("quiz-container").style.display = "none";
+        currentQuestion = 0;
       }
     }
   </script>
