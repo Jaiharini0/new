@@ -32,6 +32,7 @@
                 scale="5 5 5"
                 visible="false"
                 animation="property: rotation; to: 0 360 0; loop: true; dur: 2000">
+                <a-text value="The solar system is just one of billions in the Milky Way Galaxy" color="yellow" visible="true" align="center" width="3"></a-text>
       </a-entity>
 
       <!-- Solar System -->
@@ -191,7 +192,7 @@
               camera.setAttribute("animation", {
                 property: "position",
                 to: "1 5 5",
-                dur: 5000,
+                //dur: 5000,
                 easing: "easeInOutQuad"
               });
 
@@ -201,7 +202,7 @@
               document.querySelector("#quizButton").setAttribute("visible", "true");
 
               speak(planetDescriptions["Sun"]);
-            }, 5000);
+            }, 1000);
           });
         }
       } catch (err) {
